@@ -1,0 +1,10 @@
+timestamp,asset,direction,confidence,expiry,patterns,reasoning,result
+2026-01-09T20:39:52.158605,EUR/NZD,PUT,80,1m,"bearish_trend,shooting_star",Bearish trend on multiple timeframes with recent shooting star pattern,PENDING
+2026-01-09T20:40:40.624828,EUR/NZD,PUT,80,1m,"bearish_trend,shooting_star",Bearish trend on multiple timeframes with recent shooting star pattern,LOSS
+2026-01-09T20:40:55.563007,EUR/NZD,PUT,80,1m,"bearish_trend,shooting_star",Bearish trend on multiple timeframes with recent shooting star pattern,LOSS
+2026-01-09T20:40:56.865584,EUR/NZD,PUT,80,1m,"bearish_trend,shooting_star",Bearish trend on multiple timeframes with recent shooting star pattern,LOSS
+2026-01-09T20:40:57.393612,EUR/NZD,PUT,80,1m,"bearish_trend,shooting_star",Bearish trend on multiple timeframes with recent shooting star pattern,WIN
+2026-01-09T20:40:57.880776,EUR/NZD,PUT,80,1m,"bearish_trend,shooting_star",Bearish trend on multiple timeframes with recent shooting star pattern,LOSS
+2026-01-09T20:41:00.136945,EUR/NZD,PUT,80,1m,"bearish_trend,shooting_star",Bearish trend on multiple timeframes with recent shooting star pattern,LOSS
+2026-01-09T21:12:12.783704,USD/NGN (OTC),CALL,80,1m,"bullish_trend,support_bounce","Bullish trend observed across 1m, 2m, and 5m timeframes. Recent price action shows a bounce from the 1424.00 support level, indicating a potential upward move.",PENDING
+2026-01-09T21:13:17.707190,USD/NGN (OTC),CALL,80,1m,"bullish_trend,support_bounce","Bullish trend observed across 1m, 2m, and 5m timeframes. Recent price action shows a bounce from the 1424.00 support level, indicating a potential upward move.",WIN

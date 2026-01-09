@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Trading Analyst</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+
+<body>
+    <!-- Main Container -->
+    <div class="dashboard">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <h1>ANALYST AI</h1>
+            </div>
+            <div class="status-bar">
+                <span class="status-dot" id="status-dot"></span>
+                <span id="status-text">Ready</span>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+
+            <!-- Left: Signal Display -->
+            <div class="signal-card card">
+                <div class="card-header">
+                    <h2>📊 Current Signal</h2>
+                </div>
+                <div class="signal-content" id="signal-display">
+                    <div class="waiting-state">
+                        <div class="waiting-icon">📈</div>
+                        <h3>WAITING FOR SIGNAL</h3>
+                        <p>Press 'aa' to capture charts, then 'c' to analyze</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Top: Captures -->
+            <div class="captures-card card">
+                <div class="card-header">
+                    <h2>📷 Captures</h2>
+                    <span class="badge" id="capture-count">0</span>
+                </div>
+                <div class="captures-grid" id="captures-grid">
+                    <p class="empty-state">No captures yet</p>
+                </div>
+            </div>
+
+            <!-- Right Bottom: Stats -->
+            <div class="stats-card card">
+                <div class="card-header">
+                    <h2>📈 Performance</h2>
+                </div>
+                <div class="stats-content">
+                    <div class="stat-item stat-win">
+                        <div class="stat-value" id="wins">0</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item stat-loss">
+                        <div class="stat-value" id="losses">0</div>
+                        <div class="stat-label">Losses</div>
+                    </div>
+                    <div class="stat-item stat-rate">
+                        <div class="stat-value" id="winrate">0%</div>
+                        <div class="stat-label">Win Rate</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History -->
+            <div class="history-card card">
+                <div class="card-header">
+                    <h2>📜 Signal History</h2>
+                </div>
+                <div class="history-list" id="history-list">
+                    <p class="empty-state">No signals yet</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Hotkeys Guide -->
+        <div class="hotkeys-bar">
+            <div class="hotkey-item">
+                <kbd>aa</kbd> <span>Capture</span>
+            </div>
+            <div class="hotkey-item">
+                <kbd>c</kbd> <span>Analyze</span>
+            </div>
+            <div class="hotkey-item">
+                <kbd>v</kbd> <span>View</span>
+            </div>
+            <div class="hotkey-item">
+                <kbd>x</kbd> <span>Clear</span>
+            </div>
+            <div class="hotkey-item">
+                <kbd>q</kbd> <span>Quit</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Win/Loss Quick Actions (shown when signal active) -->
+    <div class="quick-actions" id="quick-actions" style="display: none;">
+        <button class="btn-win" onclick="recordResult('win')">✓ WIN</button>
+        <button class="btn-loss" onclick="recordResult('loss')">✗ LOSS</button>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

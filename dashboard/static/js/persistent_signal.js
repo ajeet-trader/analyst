@@ -191,9 +191,16 @@ async function recordPersistentResult(result) {
         });
 
         if (res.ok) {
+            const signalId = currentActiveSignal.id;
+
             hidePersistentPanel();
             // Optional: Show success toast instead of alert
             console.log(`Trade marked as ${result.toUpperCase()}`);
+
+            // Show optional note modal
+            if (typeof showTradeNoteModal === 'function') {
+                showTradeNoteModal(signalId);
+            }
 
             // Trigger refresh on dashboard if present
             if (window.loadRecentSignals) {

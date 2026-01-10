@@ -116,6 +116,23 @@ class Database:
         if 'session_id' not in columns:
             cursor.execute("ALTER TABLE signals ADD COLUMN session_id INTEGER REFERENCES trading_sessions(id)")
         
+        # Journal notes table (general journal entries)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS journal_notes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                title TEXT,
+                content TEXT NOT NULL,
+                tags TEXT,
+                mood TEXT,
+                session_id INTEGER,
+                FOREIGN KEY (session_id) REFERENCES trading_sessions(id) ON DELETE SET NULL
+            )
+        """)
+        
+        # Create index for journal notes
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_journal_timestamp ON journal_notes(timestamp DESC)")
+        
         self.conn.commit()
     
     def save_signal(self, signal_data: dict, chart_paths: List[str] = None) -> int:
@@ -219,6 +236,35 @@ class Database:
             total_skips=skips,
             win_rate=win_rate
         )
+    
+    def get_trade_note(self, signal_id: int) -> Optional[str]:
+        """Get user note for a specific signal"""
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT user_note FROM signals WHERE id = ?", (signal_id,))
+        row = cursor.fetchone()
+        return row['user_note'] if row else None
+    
+    def save_trade_note(self, signal_id: int, note: str) -> bool:
+        """Save or update user note for a signal"""
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            UPDATE signals 
+            SET user_note = ?
+            WHERE id = ?
+        """, (note, signal_id))
+        self.conn.commit()
+        return cursor.rowcount > 0
+    
+    def delete_trade_note(self, signal_id: int) -> bool:
+        """Clear user note for a signal"""
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            UPDATE signals 
+            SET user_note = NULL
+            WHERE id = ?
+        """, (signal_id,))
+        self.conn.commit()
+        return cursor.rowcount > 0
     
     def close(self):
         """Close database connection"""

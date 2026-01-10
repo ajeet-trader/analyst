@@ -283,6 +283,14 @@ async function recordResult(result) {
         if (data.success) {
             updateStats(data.stats);
 
+            // Get signal ID from response or current signal
+            const signalId = data.signal_id || (currentSignal && currentSignal.id);
+
+            // Show optional note modal
+            if (signalId && typeof showTradeNoteModal === 'function') {
+                showTradeNoteModal(signalId);
+            }
+
             // Hide quick actions after recording
             setTimeout(() => {
                 document.getElementById('quick-actions').style.display = 'none';

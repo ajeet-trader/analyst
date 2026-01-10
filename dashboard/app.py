@@ -447,6 +447,194 @@ def emit_providers(providers: list):
     socketio.emit('providers_update', {'providers': providers})
 
 
+# ===========================
+# JOURNAL NOTES & EXPORT APIs
+# ===========================
+
+from database.journal_notes_db import JournalNotesDB
+from journal.export_manager import export_manager
+
+journal_notes_db = JournalNotesDB()
+
+
+# Trade Notes Endpoints
+@app.route('/api/signals/<int:signal_id>/note', methods=['GET', 'POST', 'DELETE'])
+def manage_trade_note(signal_id):
+    """Get, save, or delete trade note"""
+    if request.method == 'GET':
+        note = db.get_trade_note(signal_id)
+        return jsonify({'success': True, 'note': note})
+    
+    elif request.method == 'POST':
+        data = request.json
+        note = data.get('note', '')
+        success = db.save_trade_note(signal_id, note)
+        return jsonify({'success': success})
+    
+    elif request.method == 'DELETE':
+        success = db.delete_trade_note(signal_id)
+        return jsonify({'success': success})
+
+
+@app.route('/api/journal/templates/trade')
+def get_trade_note_template():
+    """Get pre-filled trade note template"""
+    template = """✅ What went well:
+- 
+
+⚠️ What could be improved:
+- 
+
+🧠 My emotional state during this trade:
+- 
+
+📚 Key takeaway:
+- """
+    return jsonify({'success': True, 'template': template})
+
+
+# General Journal Notes Endpoints
+@app.route('/api/journal/notes', methods=['GET', 'POST'])
+def manage_notes():
+    """List or create journal notes"""
+    if request.method == 'GET':
+        limit = int(request.args.get('limit', 50))
+        offset = int(request.args.get('offset', 0))
+        session_id = request.args.get('session_id', type=int)
+        
+        notes = journal_notes_db.get_notes(limit, offset, session_id)
+        total = journal_notes_db.get_note_count(session_id)
+        
+        return jsonify({
+            'success': True,
+            'notes': notes,
+            'total': total,
+            'limit': limit,
+            'offset': offset
+        })
+    
+    elif request.method == 'POST':
+        data = request.json
+        note_id = journal_notes_db.create_note(
+            title=data.get('title'),
+            content=data.get('content'),
+            tags=data.get('tags'),
+            mood=data.get('mood'),
+            session_id=data.get('session_id')
+        )
+        return jsonify({'success': True, 'note_id': note_id})
+
+
+@app.route('/api/journal/notes/<int:note_id>', methods=['GET', 'PUT', 'DELETE'])
+def manage_note(note_id):
+    """Get, update, or delete a specific journal note"""
+    if request.method == 'GET':
+        note = journal_notes_db.get_note(note_id)
+        if note:
+            return jsonify({'success': True, 'note': note})
+        return jsonify({'success': False, 'error': 'Note not found'}), 404
+    
+    elif request.method == 'PUT':
+        data = request.json
+        success = journal_notes_db.update_note(
+            note_id,
+            title=data.get('title'),
+            content=data.get('content'),
+            tags=data.get('tags'),
+            mood=data.get('mood')
+        )
+        return jsonify({'success': success})
+    
+    elif request.method == 'DELETE':
+        success = journal_notes_db.delete_note(note_id)
+        return jsonify({'success': success})
+
+
+@app.route('/api/journal/templates/general')
+def get_general_note_template():
+    """Get pre-filled general journal template"""
+    now = datetime.now()
+    template = f"""📅 Date: {now.strftime('%B %d, %Y')}
+
+📊 Market Conditions Today:
+- Trend: 
+- Volatility: 
+
+🎯 My Performance:
+- Trades taken: 
+- Win rate: 
+
+💭 Trading Psychology Notes:
+- 
+
+🚀 Goals for Tomorrow:
+- """
+    return jsonify({'success': True, 'template': template})
+
+
+# Export Endpoints
+@app.route('/api/journal/export/csv')
+def export_csv():
+    """Export all signals to CSV"""
+    signals = db.get_recent_signals(limit=10000)  # Get all signals
+    csv_buffer = export_manager.export_to_csv(signals)
+    
+    return send_file(
+        csv_buffer,
+        mimetype='text/csv',
+        as_attachment=True,
+        download_name=f'trading_journal_{datetime.now().strftime("%Y%m%d")}.csv'
+    )
+
+
+@app.route('/api/journal/export/pdf')
+def export_pdf():
+    """Export complete journal to PDF"""
+    signals = db.get_recent_signals(limit=10000)
+    notes = journal_notes_db.get_notes(limit=10000)
+    stats = {
+        'total_signals': state['stats'].get('wins', 0) + state['stats'].get('losses', 0),
+        'total_wins': state['stats'].get('wins', 0),
+        'total_losses': state['stats'].get('losses', 0),
+        'win_rate': (state['stats'].get('wins', 0) / (state['stats'].get('wins', 0) + state['stats'].get('losses', 0)) * 100) 
+                   if (state['stats'].get('wins', 0) + state['stats'].get('losses', 0)) > 0 else 0
+    }
+    
+    pdf_buffer = export_manager.export_to_pdf(signals, notes, stats)
+    
+    if pdf_buffer:
+        return send_file(
+            pdf_buffer,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=f'trading_journal_{datetime.now().strftime("%Y%m%d")}.pdf'
+        )
+    else:
+        return jsonify({'success': False, 'error': 'ReportLab not installed'}), 500
+
+
+@app.route('/api/journal/export/image/<int:signal_id>')
+def export_trade_image(signal_id):
+    """Generate shareable trade card image"""
+    signals = db.get_recent_signals(limit=10000)
+    signal = next((s for s in signals if s.get('id') == signal_id), None)
+    
+    if not signal:
+        return jsonify({'success': False, 'error': 'Signal not found'}), 404
+    
+    img_buffer = export_manager.generate_trade_card(signal)
+    
+    if img_buffer:
+        return send_file(
+            img_buffer,
+            mimetype='image/png',
+            as_attachment=True,
+            download_name=f'trade_{signal_id}_{datetime.now().strftime("%Y%m%d")}.png'
+        )
+    else:
+        return jsonify({'success': False, 'error': 'Pillow not installed'}), 500
+
+
 def run_dashboard(host=None, port=None, open_browser=None):
     """Start the dashboard server"""
     # Use config defaults if not provided

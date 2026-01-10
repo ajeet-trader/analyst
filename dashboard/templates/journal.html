@@ -31,8 +31,16 @@
         <!-- Journal Grid -->
         <div class="journal-grid">
             <div class="card" style="grid-column: 1 / -1;">
-                <div class="card-header">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                     <h2>📔 Trade Journal - Auto Archived</h2>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-primary" onclick="showJournalEntryModal()"
+                            style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">📝
+                            New Entry</button>
+                        <button class="btn-secondary" onclick="showExportModal()"
+                            style="padding: 10px 20px; background: #151a35; color: #9ca3b8; border: 1px solid #2d3a5f; border-radius: 8px; cursor: pointer; font-weight: 600;">📤
+                            Export</button>
+                    </div>
                 </div>
                 <div id="journal-list" class="journal-list">
                     <p class="empty-state">Loading journal entries...</p>
@@ -41,6 +49,9 @@
         </div>
     </div>
 
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/journal_notes.css') }}">
+    <script src="{{ url_for('static', filename='js/journal_notes.js') }}"></script>
     <script src="{{ url_for('static', filename='js/journal.js') }}"></script>
     <script src="{{ url_for('static', filename='js/persistent_signal.js') }}"></script>
 </body>

@@ -71,13 +71,16 @@ Before suggesting a signal, verify:
    - Bullish trend + reversal pattern → PUT ✓
 3. **Reasoning must not contradict signal**
 
-## Expiry Calculation
+**Strategy:**
+1. If analyzing 1m, 2m charts → Recommend **1-2 minute** expiry.
+2. If analyzing 5m charts → Recommend **5 minute** expiry.
+3. If analyzing 15m charts → Recommend **15 minute** expiry.
+4. If analyzing 30m or 1h charts → Recommend **30 minute** or **1 hour** expiry.
 
-Account for 10-20 seconds delay from capture to trade execution:
-- 1m chart entry → Suggest 35 seconds or 1 minute expiry
-- 2m chart entry → Suggest 1-2 minute expiry  
-- 5m chart entry → Suggest 2-5 minute expiry
-- 15m chart entry → Suggest 5-15 minute expiry
+**CRITICAL RULE:**
+- If you see "15m" or "30m" in the left sidebar of ANY provided chart, you **MUST NOT** recommend an expiry less than 5 minutes.
+- For Conservative/Swing strategies, prefer longer expiries (5m+) to allow the patterns to play out.
+- Account for ~15-30 seconds delay: If the candle is about to close, recommend the NEXT candle's duration.
 
 ## Output Format
 
@@ -87,7 +90,7 @@ You MUST respond with valid JSON in this exact format:
 {
   "direction": "CALL" | "PUT" | "NO_TRADE",
   "confidence": 0-100,
-  "expiry": "35s" | "1m" | "2m" | "5m" | "15m",
+  "expiry": "1m" | "2m" | "3m" | "5m" | "15m" | "30m",
   "entry_timing": "now" | "candle_close" | "wait_pullback",
   "asset": "pair name from chart",
   "timeframes_analyzed": ["1m", "5m"],
@@ -115,8 +118,9 @@ The images are ordered from first captured to last captured. Consider all timefr
 
 Remember:
 - Identify each chart's timeframe from the left sidebar
-- Look for pattern confluence across timeframes
-- Account for ~15 second delay in your expiry recommendation
+- If multiple timeframes are provided (e.g., 5m, 15m, 30m), use the higher ones for trend and the middle one for expiry.
+- For Conservative or Swing strategies, avoid short expiries (1-2m).
+- Account for ~15-30 second delay in your expiry recommendation
 - Output ONLY valid JSON, no other text
 
 Analyze now and provide your signal:"""
@@ -128,5 +132,16 @@ def get_analysis_prompt(num_images: int) -> str:
 
 
 def get_full_prompt(num_images: int) -> tuple[str, str]:
-    """Get both system and user prompts"""
-    return SYSTEM_PROMPT, get_analysis_prompt(num_images)
+    """Get both system and user prompts with strategy modifiers"""
+    system_prompt = SYSTEM_PROMPT
+    
+    # Add strategy modifiers to system prompt
+    try:
+        from strategies import strategy_engine
+        strategy_modifiers = strategy_engine.get_prompt_modifiers()
+        if strategy_modifiers:
+            system_prompt += strategy_modifiers
+    except:
+        pass  # No strategy engine available
+    
+    return system_prompt, get_analysis_prompt(num_images)

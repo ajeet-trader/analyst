@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & Guide - AI Trading Analyst</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <div class="dashboard">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <h1>ANALYST AI - Help & Guide</h1>
+            </div>
+            <div class="nav">
+                <a href="/" class="nav-link">Dashboard</a>
+                <a href="/analytics" class="nav-link">Analytics</a>
+                <a href="/journal" class="nav-link">Journal</a>
+                <a href="/risk" class="nav-link">Risk</a>
+                <a href="/settings" class="nav-link">Settings</a>`r`n                <a href="/sessions" class="nav-link">Sessions</a>
+                <a href="/help" class="nav-link active">Help</a>
+            </div>
+        </header>
+
+        <!-- Help Content -->
+        <div class="help-container">
+
+            <!-- Quick Start -->
+            <div class="help-section">
+                <button class="accordion-header active">
+                    <span class="accordion-icon">🚀</span>
+                    <span class="accordion-title">Quick Start Guide</span>
+                    <span class="accordion-arrow">▼</span>
+                </button>
+                <div class="accordion-content" style="display: block;">
+                    <div class="step-list">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h3>Configure Your Risk Settings</h3>
+                                <p>Go to <a href="/risk">Risk Management</a> page and set:</p>
+                                <ul>
+                                    <li>Account Balance (e.g., $1000)</li>
+                                    <li>Risk Per Trade (2% recommended)</li>
+                                    <li>Daily Loss Limit (5% recommended)</li>
+                                    <li>Max Consecutive Losses (3 recommended)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h3>Choose Your Strategy</h3>
+                                <p>Go to <a href="/settings">Settings</a> and select trading strategy:</p>
+                                <ul>
+                                    <li><strong>Conservative:</strong> Best for beginners (80%+ confidence)</li>
+                                    <li><strong>Scalping:</strong> Fast 1-2m trades</li>
+                                    <li><strong>Swing:</strong> Longer 15m+ trades</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h3>Capture Charts</h3>
+                                <p>Open your trading platform and press <kbd>aa</kbd> to capture 3 screenshots</p>
+                                <div class="tip-box">
+                                    💡 <strong>Tip:</strong> Capture 10-15 seconds before candle close for best timing
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="step-item">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h3>Analyze & Trade</h3>
+                                <p>Press <kbd>c</kbd> to analyze. AI processes in 2-4 seconds.</p>
+                                <p>Review signal on dashboard + desktop notification.</p>
+                            </div>
+                        </div>
+
+                        <div class="step-item">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <h3>Record Results</h3>
+                                <p>After trade expires, click <button class="btn-mini win">✓ WIN</button> or <button
+                                        class="btn-mini loss">✗ LOSS</button></p>
+                                <p>Data automatically saved to journal and analytics!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Strategy Guide -->
+            <div class="help-section">
+                <button class="accordion-header">
+                    <span class="accordion-icon">📋</span>
+                    <span class="accordion-title">Strategy Selection Guide</span>
+                    <span class="accordion-arrow">▶</span>
+                </button>
+                <div class="accordion-content">
+                    <div class="strategy-guide">
+                        <div class="strategy-card">
+                            <h3>🛡️ Conservative Strategy</h3>
+                            <div class="strategy-meta">
+                                <span class="badge">Beginner Friendly</span>
+                                <span class="badge">Low Risk</span>
+                            </div>
+                            <p><strong>Best For:</strong> Beginners, risk-averse traders</p>
+                            <p><strong>Timeframes to Capture:</strong> 5m, 15m, 30m</p>
+                            <p><strong>Expected Expiry:</strong> 5 minutes</p>
+                            <p><strong>Requirements:</strong> 80%+ confidence, clear patterns, all timeframes must agree
+                            </p>
+                            <p><strong>Trading Times:</strong> Best during London/NY overlap (13:00-17:00 UTC)</p>
+                        </div>
+
+                        <div class="strategy-card">
+                            <h3>⚡ Scalping Strategy</h3>
+                            <div class="strategy-meta">
+                                <span class="badge">Fast Paced</span>
+                                <span class="badge">High Frequency</span>
+                            </div>
+                            <p><strong>Best For:</strong> Experienced traders, quick decisions</p>
+                            <p><strong>Timeframes to Capture:</strong> 1m, 2m, 5m</p>
+                            <p><strong>Expected Expiry:</strong> 1-2 minutes</p>
+                            <p><strong>Requirements:</strong> 70%+ confidence, momentum more important than patterns</p>
+                            <p><strong>Trading Times:</strong> High volatility periods</p>
+                        </div>
+
+                        <div class="strategy-card">
+                            <h3>🎯 Aggressive Strategy</h3>
+                            <div class="strategy-meta">
+                                <span class="badge">Higher Risk</span>
+                                <span class="badge">More Trades</span>
+                            </div>
+                            <p><strong>Best For:</strong> Risk-tolerant traders</p>
+                            <p><strong>Timeframes to Capture:</strong> 2m, 5m, 15m</p>
+                            <p><strong>Expected Expiry:</strong> 2 minutes</p>
+                            <p><strong>Requirements:</strong> 65%+ confidence (lower threshold = more signals)</p>
+                            <p><strong>Warning:</strong> Manage position size carefully!</p>
+                        </div>
+
+                        <div class="strategy-card">
+                            <h3>📈 Swing Trading Strategy</h3>
+                            <div class="strategy-meta">
+                                <span class="badge">Longer Holds</span>
+                                <span class="badge">Big Moves</span>
+                            </div>
+                            <p><strong>Best For:</strong> Patient traders, trend followers</p>
+                            <p><strong>Timeframes to Capture:</strong> 15m, 30m, 1h</p>
+                            <p><strong>Expected Expiry:</strong> 15-30 minutes</p>
+                            <p><strong>Requirements:</strong> 75%+ confidence, multi-candle patterns preferred</p>
+                            <p><strong>Best For:</strong> Strong trending markets</p>
+                        </div>
+
+                        <div class="strategy-card">
+                            <h3>📊 Trend Following Strategy</h3>
+                            <div class="strategy-meta">
+                                <span class="badge">Confluence Required</span>
+                                <span class="badge">Selective</span>
+                            </div>
+                            <p><strong>Best For:</strong> Disciplined traders</p>
+                            <p><strong>Timeframes to Capture:</strong> 5m, 15m, 30m (all 3 required)</p>
+                            <p><strong>Expected Expiry:</strong> 5 minutes</p>
+                            <p><strong>Requirements:</strong> ALL timeframes must show same trend direction</p>
+                            <p><strong>Note:</strong> Fewer signals but higher win rate</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart Capture Guide -->
+            <div class="help-section">
+                <button class="accordion-header">
+                    <span class="accordion-icon">📸</span>
+                    <span class="accordion-title">Chart Capture Best Practices</span>
+                    <span class="accordion-arrow">▶</span>
+                </button>
+                <div class="accordion-content">
+                    <div class="practice-list">
+                        <div class="practice-item">
+                            <h4>⏰ Timing is Everything</h4>
+                            <p>Capture charts <strong>10-15 seconds before candle close</strong></p>
+                            <p>This allows AI analysis (2-4s) + your execution time (3-5s) before new candle opens</p>
+                        </div>
+
+                        <div class="practice-item">
+                            <h4>📊 Timeframe Combinations</h4>
+                            <table class="guide-table">
+                                <tr>
+                                    <th>Your Goal</th>
+                                    <th>Capture These</th>
+                                    <th>Expected Expiry</th>
+                                </tr>
+                                <tr>
+                                    <td>Quick scalps</td>
+                                    <td>1m, 2m, 5m</td>
+                                    <td>1-2 minutes</td>
+                                </tr>
+                                <tr>
+                                    <td>Short-term</td>
+                                    <td>5m, 15m, 30m</td>
+                                    <td>5 minutes</td>
+                                </tr>
+                                <tr>
+                                    <td>Medium-term</td>
+                                    <td>15m, 30m, 1h</td>
+                                    <td>15 minutes</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="practice-item">
+                            <h4>✅ Quality Checks</h4>
+                            <ul>
+                                <li>✓ Charts are clear and visible</li>
+                                <li>✓ All 3 captures are from the SAME asset</li>
+                                <li>✓ Timeframe labels visible on left sidebar</li>
+                                <li>✓ Press 'v' to verify screenshots before analyzing</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Database Management -->
+            <div class="help-section">
+                <button class="accordion-header">
+                    <span class="accordion-icon">💾</span>
+                    <span class="accordion-title">Database Management</span>
+                    <span class="accordion-arrow">▶</span>
+                </button>
+                <div class="accordion-content">
+                    <div class="db-guide">
+                        <h4>Data Storage</h4>
+                        <p>All your data is stored locally on your computer:</p>
+                        <ul>
+                            <li><code>signals.db</code> - SQLite database with all signals and results</li>
+                            <li><code>journal/archives/</code> - Chart screenshots for each trade</li>
+                            <li><code>cache/</code> - Temporary screenshots (auto-cleared)</li>
+                        </ul>
+
+                        <h4>Maintenance Options (Settings Page)</h4>
+                        <div class="warning-box">
+                            <strong>⚠️ Delete Old Data (90+ days)</strong>
+                            <p>Removes signals older than 90 days to save space. Cannot be undone!</p>
+                        </div>
+
+                        <div class="danger-box">
+                            <strong>☢️ Reset Database</strong>
+                            <p>Deletes ALL signals, results, and journal entries. Use only if starting fresh!</p>
+                            <p>Requires double confirmation to prevent accidents.</p>
+                        </div>
+
+                        <h4>Backup Recommendation</h4>
+                        <p>Before resetting, manually copy these files:</p>
+                        <ul>
+                            <li><code>signals.db</code></li>
+                            <li><code>journal/</code> folder</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Troubleshooting -->
+            <div class="help-section">
+                <button class="accordion-header">
+                    <span class="accordion-icon">🔧</span>
+                    <span class="accordion-title">Troubleshooting</span>
+                    <span class="accordion-arrow">▶</span>
+                </button>
+                <div class="accordion-content">
+                    <div class="troubleshooting-guide">
+                        <div class="problem-solution">
+                            <h4 class="problem">❌ "No AI providers configured"</h4>
+                            <div class="solution">
+                                <p><strong>Solution:</strong></p>
+                                <ol>
+                                    <li>Copy <code>.env.example</code> to <code>.env</code></li>
+                                    <li>Add at least ONE API key (Groq, HuggingFace, or Together AI - all FREE)</li>
+                                    <li>Restart <code>python main.py</code></li>
+                                </ol>
+                                <p>Get keys: <a href="https://console.groq.com" target="_blank">Groq</a> | <a
+                                        href="https://huggingface.co/settings/tokens" target="_blank">HuggingFace</a>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="problem-solution">
+                            <h4 class="problem">❌ Desktop notifications not showing</h4>
+                            <div class="solution">
+                                <p><strong>Solution:</strong></p>
+                                <ol>
+                                    <li>Windows Settings → System → Notifications</li>
+                                    <li>Enable notifications for Python</li>
+                                    <li>Check <code>dashboard/config.py</code> -
+                                        <code>NOTIFICATIONS['desktop_enabled'] = True</code></li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div class="problem-solution">
+                            <h4 class="problem">❌ Signal rejected by strategy</h4>
+                            <div class="solution">
+                                <p><strong>This is normal!</strong> Your active strategy filtered the signal.</p>
+                                <p>Reasons:</p>
+                                <ul>
+                                    <li>Confidence too low for strategy (e.g., 75% but Conservative needs 80%+)</li>
+                                    <li>Wrong expiry (e.g., 5m but Scalping only allows 1-2m)</li>
+                                    <li>No patterns detected (some strategies require patterns)</li>
+                                </ul>
+                                <p><strong>Fix:</strong> Switch to a less strict strategy in Settings, or wait for
+                                    better signals.</p>
+                            </div>
+                        </div>
+
+                        <div class="problem-solution">
+                            <h4 class="problem">❌ AI always suggests 1m expiry</h4>
+                            <div class="solution">
+                                <p><strong>Solution:</strong> Capture higher timeframes!</p>
+                                <p>If you want 5m expiry, capture: <strong>5m, 15m, 30m</strong> (not 1m, 2m, 5m)</p>
+                                <p>AI uses the middle/dominant timeframe for expiry calculation.</p>
+                            </div>
+                        </div>
+
+                        <div class="problem-solution">
+                            <h4 class="problem">❌ Charts not visible on dashboard</h4>
+                            <div class="solution">
+                                <p><strong>Solution:</strong></p>
+                                <ol>
+                                    <li>Check Flask server is running</li>
+                                    <li>Verify cache folder has images</li>
+                                    <li>Refresh browser (Ctrl+F5)</li>
+                                    <li>Check browser console for errors</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hotkeys Reference -->
+            <div class="help-section">
+                <button class="accordion-header">
+                    <span class="accordion-icon">⌨️</span>
+                    <span class="accordion-title">Keyboard Shortcuts</span>
+                    <span class="accordion-arrow">▶</span>
+                </button>
+                <div class="accordion-content">
+                    <table class="hotkey-table">
+                        <tr>
+                            <th>Hotkey</th>
+                            <th>Action</th>
+                            <th>Details</th>
+                        </tr>
+                        <tr>
+                            <td><kbd>aa</kbd></td>
+                            <td>Capture Charts</td>
+                            <td>Takes 3 screenshots with 0.5s delay between each</td>
+                        </tr>
+                        <tr>
+                            <td><kbd>c</kbd></td>
+                            <td>Analyze</td>
+                            <td>Sends captured charts to AI for analysis (2-4s)</td>
+                        </tr>
+                        <tr>
+                            <td><kbd>x</kbd></td>
+                            <td>Clear Cache</td>
+                            <td>Deletes all cached screenshots</td>
+                        </tr>
+                        <tr>
+                            <td><kbd>v</kbd></td>
+                            <td>View Cache</td>
+                            <td>Opens cache folder to preview captured images</td>
+                        </tr>
+                        <tr>
+                            <td><kbd>q</kbd></td>
+                            <td>Quit</td>
+                            <td>Safely shuts down the application</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- System Workflow -->
+            <div class="help-section">
+                <button class="accordion-header">
+                    <span class="accordion-icon">⚙️</span>
+                    <span class="accordion-title">How the System Works</span>
+                    <span class="accordion-arrow">▶</span>
+                </button>
+                <div class="accordion-content">
+                    <div class="workflow-diagram">
+                        <div class="workflow-step">
+                            <div class="workflow-number">1</div>
+                            <div class="workflow-content">
+                                <h4>Capture Phase</h4>
+                                <p>You press <kbd>aa</kbd> → System takes 3 screenshots (0.5s apart) → Saved to
+                                    <code>cache/</code></p>
+                            </div>
+                        </div>
+                        <div class="workflow-arrow">↓</div>
+
+                        <div class="workflow-step">
+                            <div class="workflow-number">2</div>
+                            <div class="workflow-content">
+                                <h4>AI Analysis Phase</h4>
+                                <p>You press <kbd>c</kbd> → Charts sent to AI provider → Multi-timeframe analysis →
+                                    Pattern detection → Confidence calculation (2-4s)</p>
+                            </div>
+                        </div>
+                        <div class="workflow-arrow">↓</div>
+
+                        <div class="workflow-step">
+                            <div class="workflow-number">3</div>
+                            <div class="workflow-content">
+                                <h4>Strategy Filtering Phase</h4>
+                                <p>AI signal → Active strategy checks rules → If passes: Continue | If fails: Reject
+                                    with reason</p>
+                            </div>
+                        </div>
+                        <div class="workflow-arrow">↓</div>
+
+                        <div class="workflow-step">
+                            <div class="workflow-number">4</div>
+                            <div class="workflow-content">
+                                <h4>Persistence Phase</h4>
+                                <p>Saved to <code>signals.db</code> → Charts archived to <code>journal/</code> →
+                                    Broadcast to dashboard → Desktop notification sent</p>
+                            </div>
+                        </div>
+                        <div class="workflow-arrow">↓</div>
+
+                        <div class="workflow-step">
+                            <div class="workflow-number">5</div>
+                            <div class="workflow-content">
+                                <h4>Execution & Recording</h4>
+                                <p>You execute trade → Wait for expiry → Click WIN/LOSS → Result saved → Analytics
+                                    updated → Journal entry completed</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/help.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/persistent_signal.js') }}"></script>
+</body>
+
+</html>

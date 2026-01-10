@@ -1,0 +1,37 @@
+{
+  "signal_id": 17,
+  "timestamp": "2026-01-10T17:26:50.717331",
+  "direction": "CALL",
+  "asset": "USD/IDR (OTC)",
+  "confidence": 80,
+  "expiry": "2m",
+  "entry_timing": "now",
+  "reasoning": "Bullish trend on both 1m and 2m timeframes. Recent bullish engulfing candle at support level.",
+  "patterns_detected": [
+    "bullish_engulfing",
+    "support_bounce"
+  ],
+  "key_levels": [
+    "16776.72 support",
+    "16782.00 resistance"
+  ],
+  "provider": "groq",
+  "analysis_time_ms": 4031,
+  "charts": [
+    "J:\\New folder\\journal\\archives\\trade_17_20260110_172650\\chart_1.png",
+    "J:\\New folder\\journal\\archives\\trade_17_20260110_172650\\chart_2.png"
+  ],
+  "result": "win",
+  "user_note": "",
+  "post_analysis": {
+    "timestamp": "2026-01-10T17:27:37.763807",
+    "trade_outcome": "win",
+    "confidence_vs_result": {
+      "confidence": 80,
+      "result": "win",
+      "match": true
+    },
+    "suggestions": []
+  },
+  "completed_at": "2026-01-10T17:27:37.763096"
+}

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - AI Trading Analyst</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <div class="dashboard">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <h1>ANALYST AI - Settings</h1>
+            </div>
+            <div class="nav">
+                <a href="/" class="nav-link">Dashboard</a>
+                <a href="/analytics" class="nav-link">Analytics</a>
+                <a href="/journal" class="nav-link">Journal</a>
+                <a href="/risk" class="nav-link">Risk</a>
+                <a href="/settings" class="nav-link active">Settings</a>
+                <a href="/sessions" class="nav-link">Sessions</a>
+                <a href="/help" class="nav-link">Help</a>
+            </div>
+        </header>
+
+        <!-- Settings Grid -->
+        <div class="settings-grid">
+
+            <!-- Strategy Selection -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>📋 Trading Strategy</h2>
+                </div>
+                <div class="strategy-selector">
+                    <label>Active Strategy:</label>
+                    <select id="strategy-select" class="strategy-dropdown">
+                        <option value="conservative">Conservative (80%+ conf, longer expiry)</option>
+                        <option value="scalping">Scalping (70%+, 1-2m only)</option>
+                        <option value="aggressive">Aggressive (65%+, more trades)</option>
+                        <option value="swing">Swing Trading (75%+, 15m+ expiry)</option>
+                        <option value="trend_following">Trend Following (all TFs must agree)</option>
+                    </select>
+                    <button onclick="saveStrategy()" class="btn-save">Save Strategy</button>
+                </div>
+
+                <div id="strategy-details" class="strategy-details">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+
+            <!-- Database Stats -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>💾 Database Statistics</h2>
+                </div>
+                <div id="db-stats" class="db-stats">
+                    <div class="stat-row">
+                        <span>Total Signals:</span>
+                        <span id="stat-total">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Completed Trades:</span>
+                        <span id="stat-completed">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Database Size:</span>
+                        <span id="stat-db-size">0 MB</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Journal Size:</span>
+                        <span id="stat-journal-size">0 MB</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Database Management -->
+            <div class="card danger-zone">
+                <div class="card-header">
+                    <h2>⚠️ Database Management</h2>
+                </div>
+                <div class="db-actions">
+                    <button onclick="cleanupOldData()" class="btn-warning">
+                        🗑️ Delete Old Data (90+ days)
+                    </button>
+                    <button onclick="resetDatabase()" class="btn-danger">
+                        ☢️ Reset Database (DELETE ALL)
+                    </button>
+                    <p class="warning-text">
+                        Warning: These actions cannot be undone!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Custom Strategy Creator (Future) -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>➕ Custom Strategy (Coming Soon)</h2>
+                </div>
+                <p class="placeholder-text">
+                    Create your own custom strategies with personalized rules and AI prompts.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/persistent_signal.js') }}"></script>
+</body>
+
+</html>

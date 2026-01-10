@@ -5,8 +5,14 @@ Simple, native Windows notifications
 from winotify import Notification, audio
 from ai.signal_model import TradingSignal
 
+# Import config
+try:
+    from dashboard.config import NOTIFICATIONS
+except:
+    NOTIFICATIONS = {'auto_dismiss_seconds': 20, 'sound_enabled': True}
 
-def show_notification(signal: TradingSignal, auto_dismiss: int = 15):
+
+def show_notification(signal: TradingSignal, auto_dismiss: int = None):
     """
     Show Windows toast notification for signal
     

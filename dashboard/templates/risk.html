@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk Management - AI Trading Analyst</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <div class="dashboard">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <h1>ANALYST AI - Risk Management</h1>
+            </div>
+            <div class="nav">
+                <a href="/" class="nav-link">Dashboard</a>
+                <a href="/analytics" class="nav-link">Analytics</a>
+                <a href="/journal" class="nav-link">Journal</a>
+                <a href="/risk" class="nav-link active">Risk</a>
+                <a href="/settings" class="nav-link">Settings</a>
+                <a href="/sessions" class="nav-link">Sessions</a>
+                <a href="/help" class="nav-link">Help</a>
+            </div>
+        </header>
+
+        <!-- Risk Management Grid -->
+        <div class="risk-management-grid">
+
+            <!-- Daily Status Card -->
+            <div class="card risk-status-card">
+                <div class="card-header">
+                    <h2>📊 Today's Status</h2>
+                </div>
+                <div id="daily-status">
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <div class="status-label">Trades Today</div>
+                            <div class="status-value" id="trades-today">0</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">P&L Today</div>
+                            <div class="status-value" id="pnl-today">$0.00</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">Consecutive Losses</div>
+                            <div class="status-value" id="consecutive-losses">0</div>
+                        </div>
+                        <div class="status-item">
+                            <div class="status-label">Can Trade</div>
+                            <div class="status-value" id="can-trade">✓</div>
+                        </div>
+                    </div>
+                    <div id="risk-warning" class="risk-warning" style="display:none;"></div>
+                </div>
+            </div>
+
+            <!-- Settings Form -->
+            <div class="card risk-settings-card">
+                <div class="card-header">
+                    <h2>⚙️ Risk Settings</h2>
+                </div>
+                <form id="risk-settings-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Account Balance ($)</label>
+                            <input type="number" id="account-balance" step="0.01" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Risk Per Trade (%)</label>
+                            <input type="number" id="risk-per-trade" step="0.1" min="0.5" max="10" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Daily Loss Limit (%)</label>
+                            <input type="number" id="daily-loss-limit" step="0.1" min="1" max="20" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Max Consecutive Losses</label>
+                            <input type="number" id="max-consecutive" min="1" max="10" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Daily Profit Target ($)</label>
+                            <input type="number" id="daily-target" step="1" required />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-save">💾 Save Settings</button>
+                </form>
+            </div>
+
+            <!-- Position Size Calculator -->
+            <div class="card position-calc-card">
+                <div class="card-header">
+                    <h2>💰 Position Size Calculator</h2>
+                </div>
+                <div id="position-calc">
+                    <div class="calc-result">
+                        <div class="calc-label">Recommended Position Size:</div>
+                        <div class="calc-value" id="recommended-size">$0.00</div>
+                    </div>
+                    <div class="calc-details">
+                        <div><strong>Max Loss:</strong> <span id="max-loss">$0.00</span></div>
+                        <div><strong>Account Risk:</strong> <span id="account-risk">0%</span></div>
+                        <div><strong>Risk/Reward:</strong> <span id="risk-reward">1:0.8</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suggestions -->
+            <div class="card suggestions-card">
+                <div class="card-header">
+                    <h2>💡 Personalized Suggestions</h2>
+                </div>
+                <ul id="suggestions-list" class="suggestions-list">
+                    <li>Loading suggestions...</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/risk.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/persistent_signal.js') }}"></script>
+</body>
+
+</html>

@@ -19,11 +19,23 @@
                 <span class="logo-icon">⚡</span>
                 <h1>ANALYST AI</h1>
             </div>
-            <div class="status-bar">
-                <span class="status-dot" id="status-dot"></span>
-                <span id="status-text">Ready</span>
+            <div class="nav">
+                <a href="/" class="nav-link active">Dashboard</a>
+                <a href="/analytics" class="nav-link">Analytics</a>
+                <a href="/journal" class="nav-link">Journal</a>
+                <a href="/risk" class="nav-link">Risk</a>
+                <a href="/settings" class="nav-link">Settings</a>
+                <a href="/sessions" class="nav-link">Sessions</a>
+                <a href="/help" class="nav-link">Help</a>
             </div>
         </header>
+
+        <!-- Session Widget -->
+        <div id="session-widget" class="session-widget">
+            <div class="session-inactive">
+                <p>Loading session...</p>
+            </div>
+        </div>
 
         <!-- Main Content Grid -->
         <div class="main-grid">
@@ -113,6 +125,8 @@
         <button class="btn-loss" onclick="recordResult('loss')">✗ LOSS</button>
     </div>
 
+    <script src="{{ url_for('static', filename='js/session_controls.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/persistent_signal.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 

@@ -16,6 +16,14 @@ socket.on('state_update', (state) => {
     updateStats(state.stats);
     if (state.current_signal) {
         displaySignal(state.current_signal);
+    } else {
+        // Clear signal display if no active signal
+        const display = document.getElementById('signal-display');
+        if (display && !display.querySelector('.waiting-state')) {
+            display.innerHTML = '<div class="waiting-state"><div class="signal-icon-placeholder">📊</div><h3>WAITING FOR SIGNAL</h3><p>Press \'aa\' to capture charts, then \'c\' to analyze</p></div>';
+            document.getElementById('quick-actions').style.display = 'none';
+            currentSignal = null;
+        }
     }
     if (state.signal_history && state.signal_history.length > 0) {
         updateHistory(state.signal_history);
@@ -142,16 +150,15 @@ function displaySignal(signal) {
     document.getElementById('quick-actions').style.display = 'flex';
 
     // Start countdown
-    startCountdown(signal.expiry);
+    startCountdown(signal.expiry, signal.timestamp);
 }
 
 function displayError(error) {
     const display = document.getElementById('signal-display');
     display.innerHTML = `
-        <div class="signal-active" style="border-left: 3px solid var(--accent-red)">
+        <div class="signal-active error">
             <div class="signal-direction">
-                <span class="signal-arrow" style="color: var(--accent-red)">⚠</span>
-                <span class="signal-text" style="color: var(--accent-red)">ERROR</span>
+                <span class="signal-text">ERROR</span>
             </div>
             <div class="signal-reasoning">
                 <h4>Analysis Failed</h4>
@@ -164,38 +171,56 @@ function displayError(error) {
     `;
 }
 
-function startCountdown(expiry) {
+function startCountdown(expiry, timestamp) {
     if (timerInterval) clearInterval(timerInterval);
 
-    // Parse expiry to seconds
-    let seconds = 60; // default 1m
-    const exp = expiry.toLowerCase();
-    if (exp.includes('s')) {
-        seconds = parseInt(exp);
-    } else if (exp.includes('m')) {
-        seconds = parseInt(exp) * 60;
-    }
+    // Calculate initial remaining time from timestamp
+    // Robust parsing for Local ISO timestamp
+    const parseISO = (str) => {
+        if (!str) return new Date();
+        const t = str.includes('T') ? str : str.replace(' ', 'T');
+        return new Date(t);
+    };
+
+    const expiryMinutes = parseExpiryToMinutes(expiry);
+    const signalTime = parseISO(timestamp);
+    const expiryTime = new Date(signalTime.getTime() + expiryMinutes * 60000);
 
     const countdown = document.getElementById('countdown');
 
     timerInterval = setInterval(() => {
-        if (seconds <= 0) {
+        const now = new Date();
+        const secondsRemaining = Math.floor((expiryTime - now) / 1000);
+
+        if (secondsRemaining <= 0) {
             clearInterval(timerInterval);
-            countdown.textContent = 'EXPIRED';
-            countdown.classList.add('warning');
+            if (countdown) {
+                countdown.textContent = 'EXPIRED';
+                countdown.classList.add('warning');
+            }
             return;
         }
 
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        countdown.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        if (countdown) {
+            const mins = Math.floor(secondsRemaining / 60);
+            const secs = secondsRemaining % 60;
+            countdown.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 
-        if (seconds <= 10) {
-            countdown.classList.add('warning');
+            if (secondsRemaining <= 10) {
+                countdown.classList.add('warning');
+            } else {
+                countdown.classList.remove('warning');
+            }
         }
-
-        seconds--;
     }, 1000);
+}
+
+function parseExpiryToMinutes(expiry) {
+    if (!expiry) return 1;
+    const exp = expiry.toLowerCase();
+    if (exp.endsWith('s')) return parseInt(exp) / 60;
+    if (exp.endsWith('h')) return parseInt(exp) * 60;
+    return parseInt(exp) || 1;
 }
 
 function formatEntryTiming(timing) {
@@ -225,7 +250,12 @@ function updateHistory(history) {
     }
 
     list.innerHTML = history.map(signal => {
-        const time = signal.timestamp ? new Date(signal.timestamp).toLocaleTimeString() : '--:--';
+        const parseISO = (str) => {
+            if (!str) return new Date();
+            const t = str.includes('T') ? str : str.replace(' ', 'T');
+            return new Date(t);
+        };
+        const time = signal.timestamp ? parseISO(signal.timestamp).toLocaleTimeString() : '--:--';
         const dir = signal.direction.toLowerCase();
 
         return `
@@ -269,4 +299,52 @@ function playNotificationSound() {
         const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZSA0PVbDn77BdGAo+ltrzxnMpBSl+zPLaizsIGGS57OihUBELTKXh8bllHAU2jdXzzn0vBSF1xe/glEILEly47OynVhMKQ5zd8sFuJAUuhM/z1YU2Bxto');
         audio.play().catch(() => { });
     } catch (e) { }
+}
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => {
+    loadRecentSignals();
+    loadRecentHistory();
+});
+
+// Load recent signals to check for active ones
+window.loadRecentSignals = async function () {
+    try {
+        const res = await fetch('/api/history?limit=1');
+        const data = await res.json();
+
+        if (data.signals && data.signals.length > 0) {
+            const signal = data.signals[0];
+            // If signal has no result, it's still active
+            if (!signal.result) {
+                displaySignal(signal);
+            } else {
+                // If the active signal we were showing now has a result, clear display
+                if (currentSignal && currentSignal.id === signal.id) {
+                    const display = document.getElementById('signal-display');
+                    display.innerHTML = '<div class="waiting-state"><div class="signal-icon-placeholder">📊</div><h3>WAITING FOR SIGNAL</h3><p>Press \'aa\' to capture charts, then \'c\' to analyze</p></div>';
+                    document.getElementById('quick-actions').style.display = 'none';
+                    currentSignal = null;
+                }
+            }
+        }
+    } catch (err) {
+        console.error('Failed to load recent signals:', err);
+    }
+}
+
+// Load history
+window.loadRecentHistory = async function () {
+    try {
+        const res = await fetch('/api/history?limit=10');
+        const data = await res.json();
+
+        if (data.signals) {
+            updateHistory(data.signals);
+        }
+        if (data.stats) {
+            updateStats(data.stats);
+        }
+    } catch (err) {
+        console.error('Failed to load history:', err);
+    }
 }

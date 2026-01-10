@@ -186,9 +186,13 @@ class TradingAnalyst:
                     'reasoning': signal.reasoning,
                     'patterns_detected': signal.patterns_detected,
                     'key_levels': signal.key_levels,
-                    'timestamp': datetime.now().isoformat()
+                    'provider': result.provider_used,
+                    'analysis_time_ms': result.analysis_time_ms
                 }
-                emit_signal(signal_data)
+                
+                # Pass chart paths for database storage
+                chart_paths = [str(p) for p in image_paths]
+                emit_signal(signal_data, chart_paths)
                 
                 # Show desktop notification
                 show_notification(signal, auto_dismiss=20)

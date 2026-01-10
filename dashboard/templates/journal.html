@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journal - AI Trading Analyst</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <div class="dashboard">
+
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <h1>ANALYST AI - Journal</h1>
+            </div>
+            <div class="nav">
+                <a href="/" class="nav-link">Dashboard</a>
+                <a href="/analytics" class="nav-link">Analytics</a>
+                <a href="/journal" class="nav-link active">Journal</a>
+                <a href="/risk" class="nav-link">Risk</a>
+                <a href="/settings" class="nav-link">Settings</a>
+                <a href="/sessions" class="nav-link">Sessions</a>
+                <a href="/help" class="nav-link">Help</a>
+            </div>
+        </header>
+
+        <!-- Journal Grid -->
+        <div class="journal-grid">
+            <div class="card" style="grid-column: 1 / -1;">
+                <div class="card-header">
+                    <h2>📔 Trade Journal - Auto Archived</h2>
+                </div>
+                <div id="journal-list" class="journal-list">
+                    <p class="empty-state">Loading journal entries...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/journal.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/persistent_signal.js') }}"></script>
+</body>
+
+</html>

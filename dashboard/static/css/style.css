@@ -1758,3 +1758,31 @@ select option:hover {
         opacity: 1;
     }
 }
+
+.btn-modify {
+    padding: 6px 12px;
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--accent-blue);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    margin-left: 10px;
+}
+
+.btn-modify:hover {
+    background: var(--accent-blue);
+    color: white;
+}
+.signal-payout-badge {
+    padding: 4px 10px;
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--accent-blue);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    margin-left: 8px;
+}

@@ -9,7 +9,7 @@ import base64
 
 from config import HUGGINGFACE_TOKEN
 from ai.signal_model import TradingSignal, AnalysisResult
-from ai.prompt_templates import get_analysis_prompt
+from ai.prompt_templates import get_analysis_prompt, SYSTEM_PROMPT
 
 def is_available() -> bool:
     """Check if HuggingFace is available"""
@@ -94,6 +94,7 @@ class HuggingFaceAnalyzer:
             img_b64 = [base64.b64encode(img).decode() for img in images[:3]]
             
             messages = [
+                {"role": "system", "content": SYSTEM_PROMPT},
                 {
                     "role": "user",
                     "content": [
@@ -176,6 +177,12 @@ class HuggingFaceAnalyzer:
                 timing = "candle_close"
             else:
                 timing = "wait_pullback"
+                
+        # Extract payout
+        payout = 0.0
+        payout_match = re.search(r'payout.*?(\d{1,3})', text_lower)
+        if payout_match:
+            payout = float(payout_match.group(1))
         
         return TradingSignal(
             direction=direction,
@@ -183,6 +190,7 @@ class HuggingFaceAnalyzer:
             expiry=expiry,
             entry_timing=timing,
             asset=asset,
+            payout_percent=payout,
             reasoning=text[:200],
             patterns_detected=patterns[:4] if patterns else None
         )

@@ -27,6 +27,7 @@ function createPersistentSignalPanel() {
                     <span class="signal-confidence-bar" id="persist-confidence">--</span>
                 </div>
                 <div class="signal-secondary-info">
+                    <span class="signal-payout-text">Payout: <span id="persist-payout" style="color: var(--accent-blue); font-weight: 700">--</span></span>
                     <span class="signal-expiry-text">Expiry: <span id="persist-expiry">--</span></span>
                 </div>
             </div>
@@ -101,6 +102,7 @@ function updatePersistentPanel(signal) {
     const dirEl = document.getElementById('persist-direction');
     const assetEl = document.getElementById('persist-asset');
     const confEl = document.getElementById('persist-confidence');
+    const payoutEl = document.getElementById('persist-payout');
     const expEl = document.getElementById('persist-expiry');
 
     if (dirEl) {
@@ -109,6 +111,7 @@ function updatePersistentPanel(signal) {
     }
     if (assetEl) assetEl.textContent = signal.asset;
     if (confEl) confEl.textContent = `${signal.confidence}%`;
+    if (payoutEl) payoutEl.textContent = `${signal.payout_percent || 0}%`;
     if (expEl) expEl.textContent = signal.expiry;
 
     // Start countdown timer

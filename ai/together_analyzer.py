@@ -9,7 +9,7 @@ import base64
 
 from config import TOGETHER_API_KEY
 from ai.signal_model import TradingSignal, AnalysisResult
-from ai.prompt_templates import get_analysis_prompt
+from ai.prompt_templates import get_analysis_prompt, SYSTEM_PROMPT
 
 def is_available() -> bool:
     """Check if Together AI is available"""
@@ -57,9 +57,12 @@ class TogetherAnalyzer:
             # API call
             response = self.client.chat.completions.create(
                 model=self.model,
-                messages=[{"role": "user", "content": content}],
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": content}
+                ],
                 max_tokens=500,
-                temperature=0.7
+                temperature=0.3
             )
             
             response_text = response.choices[0].message.content
@@ -124,12 +127,19 @@ class TogetherAnalyzer:
         if "wait" in text_lower and "candle" in text_lower:
             timing = "candle_close"
         
+        # Payout
+        payout = 0.0
+        payout_match = re.search(r'payout.*?(\d{1,3})', text_lower)
+        if payout_match:
+            payout = float(payout_match.group(1))
+            
         return TradingSignal(
             direction=direction,
             confidence=min(confidence, 95),
             expiry=expiry,
             entry_timing=timing,
             asset=asset,
+            payout_percent=payout,
             reasoning=text[:200],
             patterns_detected=patterns[:4] if patterns else None
         )

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Help & Guide - AI Trading Analyst</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/quick_start_wizard.css') }}">
 </head>
 
 <body>
@@ -21,8 +22,10 @@
                 <a href="/" class="nav-link">Dashboard</a>
                 <a href="/analytics" class="nav-link">Analytics</a>
                 <a href="/journal" class="nav-link">Journal</a>
+                <a href="/watchlist" class="nav-link">Watchlist</a>
                 <a href="/risk" class="nav-link">Risk</a>
-                <a href="/settings" class="nav-link">Settings</a>`r`n                <a href="/sessions" class="nav-link">Sessions</a>
+                <a href="/settings" class="nav-link">Settings</a>
+                <a href="/sessions" class="nav-link">Sessions</a>
                 <a href="/help" class="nav-link active">Help</a>
             </div>
         </header>
@@ -302,7 +305,8 @@
                                     <li>Windows Settings → System → Notifications</li>
                                     <li>Enable notifications for Python</li>
                                     <li>Check <code>dashboard/config.py</code> -
-                                        <code>NOTIFICATIONS['desktop_enabled'] = True</code></li>
+                                        <code>NOTIFICATIONS['desktop_enabled'] = True</code>
+                                    </li>
                                 </ol>
                             </div>
                         </div>
@@ -404,7 +408,8 @@
                             <div class="workflow-content">
                                 <h4>Capture Phase</h4>
                                 <p>You press <kbd>aa</kbd> → System takes 3 screenshots (0.5s apart) → Saved to
-                                    <code>cache/</code></p>
+                                    <code>cache/</code>
+                                </p>
                             </div>
                         </div>
                         <div class="workflow-arrow">↓</div>
@@ -455,6 +460,7 @@
     </div>
 
     <script src="{{ url_for('static', filename='js/help.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/quick_start_wizard.js') }}"></script>
     <script src="{{ url_for('static', filename='js/persistent_signal.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/journal_notes.css') }}">
     <script src="{{ url_for('static', filename='js/journal_notes.js') }}"></script>

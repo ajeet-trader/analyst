@@ -56,9 +56,19 @@ class Database:
                 analysis_time_ms INTEGER,
                 result TEXT,
                 user_note TEXT,
-                chart_paths TEXT
+                chart_paths TEXT,
+                payout_percent REAL DEFAULT 0,
+                profit REAL DEFAULT 0
             )
         """)
+        
+        # Add columns if they don't exist (handle transitions)
+        try:
+            cursor.execute("ALTER TABLE signals ADD COLUMN payout_percent REAL DEFAULT 0")
+        except: pass
+        try:
+            cursor.execute("ALTER TABLE signals ADD COLUMN profit REAL DEFAULT 0")
+        except: pass
         
         # Create indexes for common queries
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_timestamp ON signals(timestamp DESC)")
@@ -116,6 +126,23 @@ class Database:
         if 'session_id' not in columns:
             cursor.execute("ALTER TABLE signals ADD COLUMN session_id INTEGER REFERENCES trading_sessions(id)")
         
+        # Add payout_percent column if not exists
+        if 'payout_percent' not in columns:
+            cursor.execute("ALTER TABLE signals ADD COLUMN payout_percent REAL DEFAULT 0")
+        
+        # Add profit column if not exists (calculated after result)
+        if 'profit' not in columns:
+            cursor.execute("ALTER TABLE signals ADD COLUMN profit REAL DEFAULT 0")
+        
+        # Add columns to asset_stats if missing
+        cursor.execute("PRAGMA table_info(asset_stats)")
+        asset_columns = [col[1] for col in cursor.fetchall()]
+        if 'confidence_history' not in asset_columns:
+            cursor.execute("ALTER TABLE asset_stats ADD COLUMN confidence_history TEXT")
+        
+        if 'session_performance' not in asset_columns:
+            cursor.execute("ALTER TABLE asset_stats ADD COLUMN session_performance TEXT")
+        
         # Journal notes table (general journal entries)
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS journal_notes (
@@ -132,6 +159,44 @@ class Database:
         
         # Create index for journal notes
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_journal_timestamp ON journal_notes(timestamp DESC)")
+        
+        # Asset stats table (per-asset performance tracking)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS asset_stats (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                asset_name TEXT NOT NULL UNIQUE,
+                
+                total_signals INTEGER DEFAULT 0,
+                wins INTEGER DEFAULT 0,
+                losses INTEGER DEFAULT 0,
+                win_rate REAL DEFAULT 0,
+                
+                avg_payout REAL DEFAULT 0,
+                best_payout REAL DEFAULT 0,
+                current_payout REAL DEFAULT 0,
+                
+                total_profit REAL DEFAULT 0,
+                avg_profit_per_trade REAL DEFAULT 0,
+                
+                last_checked TEXT,
+                last_signal_id INTEGER,
+                
+                current_streak INTEGER DEFAULT 0,
+                streak_type TEXT,
+                
+                session_performance TEXT,
+                confidence_history TEXT,  -- JSON: [85, 90, 75, ...]
+                
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                
+                FOREIGN KEY (last_signal_id) REFERENCES signals(id)
+            )
+        """)
+        
+        # Create index for asset stats
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_asset_name ON asset_stats(asset_name)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_asset_updated ON asset_stats(updated_at DESC)")
         
         self.conn.commit()
     
@@ -162,8 +227,8 @@ class Database:
             INSERT INTO signals (
                 direction, asset, confidence, expiry, entry_timing,
                 reasoning, patterns_detected, key_levels, trend_higher_tf,
-                trend_lower_tf, provider_used, analysis_time_ms, chart_paths, session_id, timestamp
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                trend_lower_tf, provider_used, analysis_time_ms, chart_paths, session_id, payout_percent, timestamp
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             signal_data['direction'],
             signal_data['asset'],
@@ -179,6 +244,7 @@ class Database:
             signal_data.get('analysis_time_ms', 0),
             charts_json,
             session_id,
+            signal_data.get('payout_percent', 0),
             datetime.now().isoformat()
         ))
         
@@ -223,6 +289,9 @@ class Database:
         """)
         row = cursor.fetchone()
         
+        if not row:
+            return TradeStats(0, 0, 0, 0, 0)
+            
         total = row['total'] or 0
         wins = row['wins'] or 0
         losses = row['losses'] or 0

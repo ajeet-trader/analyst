@@ -21,6 +21,7 @@
                 <a href="/" class="nav-link">Dashboard</a>
                 <a href="/analytics" class="nav-link">Analytics</a>
                 <a href="/journal" class="nav-link active">Journal</a>
+                <a href="/watchlist" class="nav-link">Watchlist</a>
                 <a href="/risk" class="nav-link">Risk</a>
                 <a href="/settings" class="nav-link">Settings</a>
                 <a href="/sessions" class="nav-link">Sessions</a>
@@ -30,13 +31,11 @@
 
         <!-- Journal Grid -->
         <div class="journal-grid">
-            <div class="card" style="grid-column: 1 / -1;">
+            <!-- Left: Trade Journal (Main) -->
+            <div class="card journal-main">
                 <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                    <h2>📔 Trade Journal - Auto Archived</h2>
+                    <h2>📔 Trade Journal</h2>
                     <div style="display: flex; gap: 10px;">
-                        <button class="btn-primary" onclick="showJournalEntryModal()"
-                            style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">📝
-                            New Entry</button>
                         <button class="btn-secondary" onclick="showExportModal()"
                             style="padding: 10px 20px; background: #151a35; color: #9ca3b8; border: 1px solid #2d3a5f; border-radius: 8px; cursor: pointer; font-weight: 600;">📤
                             Export</button>
@@ -44,6 +43,19 @@
                 </div>
                 <div id="journal-list" class="journal-list">
                     <p class="empty-state">Loading journal entries...</p>
+                </div>
+            </div>
+
+            <!-- Right: General Journal Entries -->
+            <div class="card journal-sidebar">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2>📝 Personal Notes</h2>
+                    <button class="btn-primary" onclick="showJournalEntryModal()"
+                        style="padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem;">+
+                        New</button>
+                </div>
+                <div id="notes-list" class="journal-notes-list">
+                    <p class="empty-state">No personal notes yet</p>
                 </div>
             </div>
         </div>

@@ -34,8 +34,9 @@ function createNoteModal(signalId) {
             <div class="modal-body">
                 <textarea id="note-content" rows="12" placeholder="Add your notes here..."></textarea>
             </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" onclick="closeNoteModal()">Skip</button>
+            <div class="modal-footer" style="display: flex; justify-content: space-between;">
+                <button class="btn-skip" onclick="closeNoteModal()" 
+                    style="padding: 10px 24px; background: transparent; color: #9ca3b8; border: 1px solid #2d3a5f; border-radius: 8px; cursor: pointer; font-weight: 600;">⏩ Skip & Record</button>
                 <button class="btn-primary" onclick="saveTradeNote(${signalId})">Save Note</button>
             </div>
         </div>
@@ -70,12 +71,20 @@ window.saveTradeNote = async function (signalId) {
         if (data.success) {
             showNotification('✅ Note saved!', 'success');
             closeNoteModal();
+            refreshJournal();
         }
     } catch (err) {
         console.error('Failed to save note:', err);
         showNotification('❌ Failed to save note', 'error');
     }
 };
+
+// Utility to refresh journal if on journal page/dashboard
+function refreshJournal() {
+    if (typeof loadJournal === 'function') loadJournal();
+    if (typeof loadGeneralNotes === 'function') loadGeneralNotes();
+    if (typeof loadRecentHistory === 'function') loadRecentHistory();
+}
 
 // ==================
 // GENERAL JOURNAL

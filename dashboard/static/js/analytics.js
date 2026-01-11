@@ -71,7 +71,7 @@ async function loadPatternChart() {
 
         const ctx = document.getElementById('patternChart').getContext('2d');
         patternChart = new Chart(ctx, {
-            type: 'horizontalBar',
+            type: 'bar',
             data: {
                 labels: data.map(d => d.pattern),
                 datasets: [{

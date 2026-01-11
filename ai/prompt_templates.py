@@ -93,6 +93,7 @@ You MUST respond with valid JSON in this exact format:
   "expiry": "1m" | "2m" | "3m" | "5m" | "15m" | "30m",
   "entry_timing": "now" | "candle_close" | "wait_pullback",
   "asset": "pair name from chart",
+  "payout_percent": 92.0,
   "timeframes_analyzed": ["1m", "5m"],
   "patterns_detected": ["bullish_engulfing", "support_bounce"],
   "trend_higher_tf": "bullish" | "bearish" | "sideways",
@@ -101,6 +102,8 @@ You MUST respond with valid JSON in this exact format:
   "reasoning": "Brief explanation of why this signal"
 }
 ```
+
+**CRITICAL: Always extract the payout percentage visible on the screenshot (usually 88-96%). Look for "Your payout: XX%" or percentage shown near the Up/Down trade buttons on the right side.**
 
 ## Important Rules
 

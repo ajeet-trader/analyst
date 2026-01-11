@@ -64,15 +64,20 @@ socket.on('stats_update', (stats) => {
 
 // Update functions
 function updateStatus(status) {
-    document.getElementById('status-text').textContent = status;
+    const statusText = document.getElementById('status-text');
+    if (statusText) {
+        statusText.textContent = status;
+    }
     const dot = document.getElementById('status-dot');
 
-    if (status.toLowerCase().includes('analyzing')) {
-        dot.style.background = '#f59e0b';
-    } else if (status.toLowerCase().includes('error')) {
-        dot.style.background = '#ef4444';
-    } else {
-        dot.style.background = '#10b981';
+    if (dot) {
+        if (status.toLowerCase().includes('analyzing')) {
+            dot.style.background = '#f59e0b';
+        } else if (status.toLowerCase().includes('error')) {
+            dot.style.background = '#ef4444';
+        } else {
+            dot.style.background = '#10b981';
+        }
     }
 }
 
@@ -122,18 +127,30 @@ function displaySignal(signal) {
                     </div>
                 </div>
                 <div class="signal-stat">
+                    <div class="signal-stat-label">PAYOUT</div>
+                    <div class="payout-display" style="color: var(--accent-blue)">
+                        <span style="font-size: 1.5rem; font-weight: 700">${signal.payout_percent || 0}%</span>
+                    </div>
+                </div>
+                <div class="signal-stat">
                     <div class="signal-stat-label">COUNTDOWN</div>
                     <div class="countdown" id="countdown">--:--</div>
                 </div>
             </div>
             
-            ${signal.patterns_detected && signal.patterns_detected.length > 0 ? `
-                <div class="patterns-badges">
-                    ${signal.patterns_detected.map(p => `
-                        <span class="pattern-badge">${p.replace(/_/g, ' ').toUpperCase()}</span>
-                    `).join('')}
-                </div>
-            ` : ''}
+            ${(() => {
+            // Parse patterns_detected if it's a JSON string
+            const patterns = typeof signal.patterns_detected === 'string'
+                ? JSON.parse(signal.patterns_detected)
+                : signal.patterns_detected;
+            return patterns && patterns.length > 0 ? `
+                    <div class="patterns-badges">
+                        ${patterns.map(p => `
+                            <span class="pattern-badge">${p.replace(/_/g, ' ').toUpperCase()}</span>
+                        `).join('')}
+                    </div>
+                ` : '';
+        })()}
             
             ${signal.reasoning ? `
                 <div class="signal-reasoning">

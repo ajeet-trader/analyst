@@ -22,14 +22,16 @@ def show_notification(signal: TradingSignal, auto_dismiss: int = None):
     """
     # Always print to console
     arrow = "▲" if signal.direction == "CALL" else "▼" if signal.direction == "PUT" else "●"
-    print(f"\n🔔 {arrow} {signal.direction} | {signal.asset} | {signal.confidence}% | {signal.expiry}")
+    payout_display = f" | Payout: {signal.payout_percent}%" if signal.payout_percent > 0 else ""
+    print(f"\n🔔 {arrow} {signal.direction} | {signal.asset} | {signal.confidence}%{payout_display} | {signal.expiry}")
     
     try:
         # Create notification
+        payout_text = f" | Payout: {signal.payout_percent}%" if signal.payout_percent > 0 else ""
         toast = Notification(
             app_id="AI Trading Analyst",
             title=f"{signal.direction} Signal - {signal.asset}",
-            msg=f"Confidence: {signal.confidence}% | Expiry: {signal.expiry}\n{signal.reasoning[:100] if signal.reasoning else 'No details'}",
+            msg=f"Confidence: {signal.confidence}%{payout_text} | Expiry: {signal.expiry}\n{signal.reasoning[:100] if signal.reasoning else 'No details'}",
             duration="long"
         )
         

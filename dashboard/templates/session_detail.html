@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Details - AI Trading Analyst</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/session_detail.css') }}">
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <h1>ANALYST AI - Session Details</h1>
+            </div>
+            <div class="nav">
+                <a href="/" class="nav-link">Dashboard</a>
+                <a href="/analytics" class="nav-link">Analytics</a>
+                <a href="/journal" class="nav-link">Journal</a>
+                <a href="/watchlist" class="nav-link">Watchlist</a>
+                <a href="/risk" class="nav-link">Risk</a>
+                <a href="/settings" class="nav-link">Settings</a>
+                <a href="/sessions" class="nav-link active">Sessions</a>
+                <a href="/help" class="nav-link">Help</a>
+            </div>
+        </header>
+
+        <div class="session-detail-page">
+            <!-- Breadcrumb Navigation -->
+            <div class="breadcrumb">
+                <a href="/sessions" class="breadcrumb-link">← Back to Sessions</a>
+            </div>
+
+            <!-- Session Overview Card -->
+            <div class="card session-overview">
+                <div class="session-header">
+                    <div class="session-title">
+                        <h1 id="session-name">Loading...</h1>
+                        <span id="session-status" class="status-badge">ACTIVE</span>
+                    </div>
+                    <div class="session-meta">
+                        <span id="session-date">--</span> • <span id="session-duration">--</span>
+                    </div>
+                </div>
+
+                <div class="session-stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Trades</div>
+                        <div class="stat-value" id="total-trades">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Wins</div>
+                        <div class="stat-value stat-wins" id="wins">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Losses</div>
+                        <div class="stat-value stat-losses" id="losses">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Win Rate</div>
+                        <div class="stat-value" id="win-rate">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Avg Payout</div>
+                        <div class="stat-value" id="avg-payout">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total P&L</div>
+                        <div class="stat-value" id="total-pl">$0.00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trades Table -->
+            <div class="card trades-section">
+                <div class="card-header">
+                    <h2>📋 Session Trades</h2>
+                </div>
+                <div class="trades-table-container">
+                    <table class="trades-table" id="trades-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Asset</th>
+                                <th>Direction</th>
+                                <th>Confidence</th>
+                                <th>Payout</th>
+                                <th>Expiry</th>
+                                <th>Result</th>
+                                <th>P&L</th>
+                                <th>Charts</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trades-tbody">
+                            <tr>
+                                <td colspan="9" class="empty-state">No trades in this session</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Preview Modal -->
+    <div id="chart-modal" class="chart-modal" style="display: none;">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeChartModal()">×</button>
+            <div id="chart-carousel" class="chart-carousel"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/session_detail.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/persistent_signal.js') }}"></script>
+</body>
+
+</html>

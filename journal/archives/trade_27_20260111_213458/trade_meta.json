@@ -1,0 +1,37 @@
+{
+  "signal_id": 27,
+  "timestamp": "2026-01-11T21:34:58.883851",
+  "direction": "PUT",
+  "asset": "CAD/JPY",
+  "confidence": 80,
+  "expiry": "2m",
+  "entry_timing": "now",
+  "reasoning": "The 1m chart shows a bearish trend with the price facing resistance at 114.600. The recent candles have been forming lower highs, indicating bearish momentum. The confluence of the bearish trend and resistance level suggests a PUT signal.",
+  "patterns_detected": [
+    "bearish_momentum",
+    "resistance_level"
+  ],
+  "key_levels": [
+    "114.600 resistance",
+    "114.400 support"
+  ],
+  "provider": "groq",
+  "analysis_time_ms": 2605,
+  "charts": [
+    "J:\\New folder\\journal\\archives\\trade_27_20260111_213458\\chart_1.png",
+    "J:\\New folder\\journal\\archives\\trade_27_20260111_213458\\chart_2.png"
+  ],
+  "result": "win",
+  "user_note": "",
+  "post_analysis": {
+    "timestamp": "2026-01-11T21:36:10.978650",
+    "trade_outcome": "win",
+    "confidence_vs_result": {
+      "confidence": 80,
+      "result": "win",
+      "match": true
+    },
+    "suggestions": []
+  },
+  "completed_at": "2026-01-11T21:36:10.978161"
+}

@@ -57,6 +57,7 @@ def _parse_response(response_text: str) -> TradingSignal:
             expiry=data.get("expiry", ""),
             entry_timing=data.get("entry_timing", "now"),
             asset=data.get("asset", "Unknown"),
+            payout_percent=float(str(data.get("payout_percent", 0)).replace('%', '').strip() or 0),
             timeframes_analyzed=data.get("timeframes_analyzed", []),
             patterns_detected=data.get("patterns_detected", []),
             trend_higher_tf=data.get("trend_higher_tf", ""),

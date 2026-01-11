@@ -1,6 +1,7 @@
 // Journal Page - Display archived trades
 document.addEventListener('DOMContentLoaded', () => {
     loadJournal();
+    loadGeneralNotes();
 });
 
 async function loadJournal() {
@@ -12,6 +13,55 @@ async function loadJournal() {
     } catch (err) {
         console.error('Failed to load journal:', err);
     }
+}
+
+async function loadGeneralNotes() {
+    try {
+        const res = await fetch('/api/journal/notes?limit=20');
+        const data = await res.json();
+        if (data.success) {
+            displayGeneralNotes(data.notes);
+        }
+    } catch (err) {
+        console.error('Failed to load general notes:', err);
+    }
+}
+
+function displayGeneralNotes(notes) {
+    const container = document.getElementById('notes-list');
+    if (!container) return;
+
+    if (!notes || notes.length === 0) {
+        container.innerHTML = '<p class="empty-state">No personal notes yet</p>';
+        return;
+    }
+
+    container.innerHTML = notes.map(note => {
+        const date = new Date(note.timestamp).toLocaleDateString();
+        const moodEmoji = {
+            'confident': '😎',
+            'uncertain': '😐',
+            'frustrated': '😤',
+            'motivated': '🔥',
+            'calm': '😌'
+        }[note.mood] || '📝';
+
+        return `
+            <div class="note-item">
+                <div class="note-header">
+                    <span class="note-mood">${moodEmoji}</span>
+                    <strong class="note-title">${note.title || 'Untitled Note'}</strong>
+                </div>
+                <div class="note-content">${note.content.substring(0, 100)}${note.content.length > 100 ? '...' : ''}</div>
+                <div class="note-footer">
+                    <span class="note-date">${date}</span>
+                    <div class="note-tags">
+                        ${note.tags ? note.tags.map(t => `<span class="tag-badge">${t}</span>`).join('') : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 function displayJournal(trades) {
@@ -41,11 +91,13 @@ function displayJournal(trades) {
                     <div class="journal-meta">
                         <span class="journal-time">${timestamp}</span>
                         <span class="journal-confidence">${trade.confidence}%</span>
+                        <button class="btn-modify" onclick="modifyResult(${trade.signal_id})">✏️ Modify</button>
                     </div>
                 </div>
                 
                 <div class="journal-details">
                     <div class="journal-info">
+                        <strong>Payout:</strong> <span style="color: var(--accent-blue)">${trade.payout_percent || 0}%</span> |
                         <strong>Expiry:</strong> ${trade.expiry} | 
                         <strong>Timing:</strong> ${trade.entry_timing} |
                         <strong>Provider:</strong> ${trade.provider}
@@ -91,4 +143,32 @@ function displayJournal(trades) {
             </div>
         `;
     }).join('');
+}
+
+window.modifyResult = async function (signalId) {
+    const result = prompt("Enter manual result (win, loss, or draw):", "win");
+    if (!result) return;
+
+    if (!['win', 'loss', 'draw'].includes(result.toLowerCase())) {
+        alert("Invalid result! Please use 'win', 'loss', or 'draw'.");
+        return;
+    }
+
+    try {
+        const res = await fetch(`/api/signals/${signalId}/modify_result`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ result: result.toLowerCase() })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+            alert("✅ Result modified successfully!");
+            loadJournal(); // Refresh
+        } else {
+            alert("❌ Failed to modify result: " + data.error);
+        }
+    } catch (err) {
+        console.error('Failed to modify result:', err);
+    }
 }

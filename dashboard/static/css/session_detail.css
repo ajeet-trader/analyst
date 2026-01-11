@@ -1,0 +1,319 @@
+/* Session Detail Page Styles */
+.session-detail-page {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    margin-bottom: 24px;
+}
+
+.breadcrumb-link {
+    color: var(--accent-blue);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.breadcrumb-link:hover {
+    color: var(--text-primary);
+}
+
+/* Session Overview */
+.session-overview {
+    margin-bottom: 24px;
+}
+
+.session-header {
+    margin-bottom: 24px;
+}
+
+.session-title {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.session-title h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: var(--text-primary);
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.status-active {
+    background: var(--accent-green);
+    color: var(--bg-primary);
+}
+
+.status-badge.status-paused {
+    background: var(--accent-yellow);
+    color: var(--bg-primary);
+}
+
+.status-badge.status-ended {
+    background: var(--text-secondary);
+    color: var(--bg-primary);
+}
+
+.session-meta {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Session Stats Grid */
+.session-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+}
+
+.stat-card {
+    background: var(--bg-panel);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.stat-wins {
+    color: var(--accent-green) !important;
+}
+
+.stat-losses {
+    color: var(--accent-red) !important;
+}
+
+.stat-profit {
+    color: var(--accent-green) !important;
+}
+
+.stat-loss {
+    color: var(--accent-red) !important;
+}
+
+/* Trades Section */
+.trades-section {
+    margin-bottom: 24px;
+}
+
+.trades-table-container {
+    overflow-x: auto;
+}
+
+.trades-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-panel);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.trades-table thead th {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 16px 12px;
+    text-align: left;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+.trades-table tbody td {
+    padding: 16px 12px;
+    color: var(--text-primary);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.trades-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.trades-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Direction Badge */
+.direction-badge {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.direction-badge.call {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--accent-green);
+}
+
+.direction-badge.put {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--accent-red);
+}
+
+/* Result Badge */
+.result-badge {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.result-badge.win {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--accent-green);
+}
+
+.result-badge.loss {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--accent-red);
+}
+
+.result-badge.pending {
+    background: rgba(251, 191, 36, 0.2);
+    color: var(--accent-yellow);
+}
+
+/* View Charts Button */
+.btn-view-charts {
+    background: var(--accent-blue);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.btn-view-charts:hover {
+    background: var(--accent-purple);
+    transform: translateY(-1px);
+}
+
+/* Chart Modal */
+.chart-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.chart-modal .modal-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.chart-modal .modal-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2.5rem;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.chart-modal .modal-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.chart-carousel {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding: 16px;
+}
+
+.chart-slide img {
+    max-height: 70vh;
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* Profit/Loss Colors */
+.profit-positive {
+    color: var(--accent-green) !important;
+    font-weight: 600;
+}
+
+.profit-negative {
+    color: var(--accent-red) !important;
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .session-detail-page {
+        padding: 16px;
+    }
+
+    .session-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+    }
+
+    .trades-table {
+        font-size: 0.85rem;
+    }
+
+    .trades-table thead th,
+    .trades-table tbody td {
+        padding: 12px 8px;
+    }
+}

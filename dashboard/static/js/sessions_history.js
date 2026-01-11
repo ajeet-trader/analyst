@@ -77,70 +77,8 @@ function getStatusBadge(status) {
 
 async function viewSessionDetails(sessionId) {
     try {
-        const res = await fetch(`/api/sessions/${sessionId}/details`);
-        const session = await res.json();
-
-        if (!session || !session.id) {
-            alert('Session not found');
-            return;
-        }
-
-        const stats = session.stats || {};
-        const signals = session.signals || [];
-
-        const modalBody = document.getElementById('session-modal-body');
-        modalBody.innerHTML = `
-            <h2>${session.session_name}</h2>
-            
-            <div class="session-details-grid">
-                <div class="detail-card">
-                    <h3>Overview</h3>
-                    <p><strong>Started:</strong> ${formatDate(session.start_time)}</p>
-                    <p><strong>Ended:</strong> ${session.end_time ? formatDate(session.end_time) : 'Ongoing'}</p>
-                    <p><strong>Duration:</strong> ${calculateSessionDuration(session.start_time, session.end_time)}</p>
-                    <p><strong>Strategy:</strong> ${session.strategy_name}</p>
-                    <p><strong>Status:</strong> ${getStatusBadge(session.status)}</p>
-                </div>
-                
-                <div class="detail-card">
-                    <h3>Performance</h3>
-                    <p><strong>Total Trades:</strong> ${stats.total_signals}</p>
-                    <p><strong>Wins:</strong> ${stats.wins}</p>
-                    <p><strong>Losses:</strong> ${stats.losses}</p>
-                    <p><strong>Win Rate:</strong> ${stats.win_rate.toFixed(1)}%</p>
-                    <p><strong>P&L:</strong> <span class="${stats.total_pnl >= 0 ? 'profit' : 'loss'}">$${stats.total_pnl.toFixed(2)}</span></p>
-                </div>
-            </div>
-            
-            ${session.notes ? `<div class="session-notes"><h3>Notes</h3><p>${session.notes}</p></div>` : ''}
-            
-            <h3>Trades in Session</h3>
-            <table class="trades-table">
-                <thead>
-                    <tr>
-                        <th>Time</th>
-                        <th>Asset</th>
-                        <th>Direction</th>
-                        <th>Confidence</th>
-                        <th>Result</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${signals.map(sig => `
-                        <tr>
-                            <td>${formatDate(sig.timestamp)}</td>
-                            <td>${sig.asset}</td>
-                            <td class="${sig.direction.toLowerCase()}">${sig.direction}</td>
-                            <td>${sig.confidence}%</td>
-                            <td>${sig.result ? `<span class="badge badge-${sig.result}">${sig.result}</span>` : 'Pending'}</td>
-                        </tr>
-                    `).join('') || '<tr><td colspan="5">No trades yet</td></tr>'}
-                </tbody>
-            </table>
-        `;
-
-        document.getElementById('session-modal').style.display = 'flex';
-
+        // Navigate to dedicated session detail page
+        window.location.href = `/sessions/${sessionId}`;
     } catch (err) {
         console.error('Failed to load session details:', err);
         alert('Failed to load session details');
@@ -153,7 +91,9 @@ function closeSessionModal() {
 
 async function resumeSession(sessionId) {
     try {
-        const res = await fetch(`/api/sessions/${sessionId}/resume`, { method: 'POST' });
+        const res = await fetch(`/api/sessions/${sessionId}/resume`, {
+            method: 'POST'
+        });
         const data = await res.json();
 
         if (data.success) {

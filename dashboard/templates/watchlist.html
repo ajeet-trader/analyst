@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asset Watchlist - AI Trading Analyst</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/watchlist.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/asset_detail_modal.css') }}">
+</head>
+
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <h1>ANALYST AI - Watchlist</h1>
+            </div>
+            <div class="nav">
+                <a href="/" class="nav-link">Dashboard</a>
+                <a href="/analytics" class="nav-link">Analytics</a>
+                <a href="/journal" class="nav-link">Journal</a>
+                <a href="/watchlist" class="nav-link active">Watchlist</a>
+                <a href="/risk" class="nav-link">Risk</a>
+                <a href="/settings" class="nav-link">Settings</a>
+                <a href="/sessions" class="nav-link">Sessions</a>
+                <a href="/help" class="nav-link">Help</a>
+            </div>
+        </header>
+
+        <!-- Suggestion Card -->
+        <div id="suggestion-card" class="suggestion-card" style="display: none;">
+            <div class="suggestion-icon">💡</div>
+            <div class="suggestion-content">
+                <h3>Suggested Next Asset</h3>
+                <div class="suggestion-asset" id="suggested-asset"></div>
+                <div class="suggestion-reasons" id="suggestion-reasons"></div>
+            </div>
+        </div>
+
+        <!-- Asset Grid -->
+        <div class="assets-container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>📊 Multi-Asset Performance</h2>
+                    <button class="btn-refresh" onclick="loadAssets()">🔄 Refresh</button>
+                </div>
+                <div id="assets-grid" class="assets-grid">
+                    <div class="empty-state">No assets tracked yet. Start capturing signals to build your watchlist!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Heatmap -->
+        <div class="heatmap-container">
+            <div class="card">
+                <div class="card-header">
+                    <h2>🔥 Performance Heatmap</h2>
+                </div>
+                <div id="heatmap" class="heatmap">
+                    <div class="empty-state">Heatmap will appear once you have multiple assets...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/journal_notes.css') }}">
+    <script src="{{ url_for('static', filename='js/journal_notes.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/watchlist.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/persistent_signal.js') }}"></script>
+</body>
+
+</html>

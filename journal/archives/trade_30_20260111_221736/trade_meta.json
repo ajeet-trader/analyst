@@ -1,0 +1,37 @@
+{
+  "signal_id": 30,
+  "timestamp": "2026-01-11T22:17:36.803115",
+  "direction": "CALL",
+  "asset": "NZD/CAD",
+  "confidence": 80,
+  "expiry": "2m",
+  "entry_timing": "now",
+  "reasoning": "Bullish trend on both 1m and 2m timeframes. Recent bullish engulfing candle on 1m chart indicates potential for upward movement. Price bouncing off support level around 0.7760.",
+  "patterns_detected": [
+    "bullish_engulfing",
+    "support_bounce"
+  ],
+  "key_levels": [
+    "0.7760 support",
+    "0.7800 resistance"
+  ],
+  "provider": "groq",
+  "analysis_time_ms": 2962,
+  "charts": [
+    "J:\\New folder\\journal\\archives\\trade_30_20260111_221736\\chart_1.png",
+    "J:\\New folder\\journal\\archives\\trade_30_20260111_221736\\chart_2.png"
+  ],
+  "result": "win",
+  "user_note": "",
+  "post_analysis": {
+    "timestamp": "2026-01-11T22:31:47.763049",
+    "trade_outcome": "win",
+    "confidence_vs_result": {
+      "confidence": 80,
+      "result": "win",
+      "match": true
+    },
+    "suggestions": []
+  },
+  "completed_at": "2026-01-11T22:31:47.759413"
+}

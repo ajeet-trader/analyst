@@ -22,63 +22,59 @@
                 <a href="/" class="nav-link">Dashboard</a>
                 <a href="/analytics" class="nav-link active">Analytics</a>
                 <a href="/journal" class="nav-link">Journal</a>
+                <a href="/watchlist" class="nav-link">Watchlist</a>
                 <a href="/risk" class="nav-link">Risk</a>
                 <a href="/settings" class="nav-link">Settings</a>
                 <a href="/sessions" class="nav-link">Sessions</a>
                 <a href="/help" class="nav-link">Help</a>
             </div>
         </header>
-
-        <!-- Analytics Grid -->
-        <div class="analytics-grid">
-
-            <!-- Overview Cards -->
-            <div class="stats-overview">
-                <div class="stat-card">
-                    <div class="stat-icon">📊</div>
-                    <div class="stat-value" id="total-signals">0</div>
-                    <div class="stat-label">Total Signals</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">✅</div>
-                    <div class="stat-value" id="total-wins">0</div>
-                    <div class="stat-label">Wins</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">❌</div>
-                    <div class="stat-value" id="total-losses">0</div>
-                    <div class="stat-label">Losses</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">📈</div>
-                    <div class="stat-value" id="win-rate">0%</div>
-                    <div class="stat-label">Win Rate</div>
-                </div>
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-value" id="total-signals">0</div>
+                <div class="stat-label">Total Signals</div>
             </div>
-
-            <!-- Charts -->
-            <div class="chart-card card">
-                <div class="card-header">
-                    <h2>Performance by Asset</h2>
-                </div>
-                <canvas id="assetChart"></canvas>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-value" id="total-wins">0</div>
+                <div class="stat-label">Wins</div>
             </div>
-
-            <div class="chart-card card">
-                <div class="card-header">
-                    <h2>Performance by Pattern</h2>
-                </div>
-                <canvas id="patternChart"></canvas>
+            <div class="stat-card">
+                <div class="stat-icon">❌</div>
+                <div class="stat-value" id="total-losses">0</div>
+                <div class="stat-label">Losses</div>
             </div>
-
-            <div class="chart-card card" style="grid-column: 1 / -1;">
-                <div class="card-header">
-                    <h2>30-Day Timeline</h2>
-                </div>
-                <canvas id="timelineChart"></canvas>
+            <div class="stat-card">
+                <div class="stat-icon">📈</div>
+                <div class="stat-value" id="win-rate">0%</div>
+                <div class="stat-label">Win Rate</div>
             </div>
-
         </div>
+
+        <!-- Charts -->
+        <div class="chart-card card">
+            <div class="card-header">
+                <h2>Performance by Asset</h2>
+            </div>
+            <canvas id="assetChart"></canvas>
+        </div>
+
+        <div class="chart-card card">
+            <div class="card-header">
+                <h2>Performance by Pattern</h2>
+            </div>
+            <canvas id="patternChart"></canvas>
+        </div>
+
+        <div class="chart-card card" style="grid-column: 1 / -1;">
+            <div class="card-header">
+                <h2>30-Day Timeline</h2>
+            </div>
+            <canvas id="timelineChart"></canvas>
+        </div>
+
+    </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/analytics.js') }}"></script>

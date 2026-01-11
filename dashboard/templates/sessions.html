@@ -21,45 +21,41 @@
                 <a href="/" class="nav-link">Dashboard</a>
                 <a href="/analytics" class="nav-link">Analytics</a>
                 <a href="/journal" class="nav-link">Journal</a>
+                <a href="/watchlist" class="nav-link">Watchlist</a>
                 <a href="/risk" class="nav-link">Risk</a>
                 <a href="/settings" class="nav-link">Settings</a>
                 <a href="/sessions" class="nav-link active">Sessions</a>
                 <a href="/help" class="nav-link">Help</a>
             </div>
         </header>
-
-        <!-- Sessions Grid -->
-        <div class="sessions-container">
-
-            <!-- Sessions Table -->
-            <div class="card">
-                <div class="card-header">
-                    <h2>📊 Trading Sessions History</h2>
-                </div>
-
-                <table class="sessions-table">
-                    <thead>
-                        <tr>
-                            <th>Session Name</th>
-                            <th>Date</th>
-                            <th>Duration</th>
-                            <th>Strategy</th>
-                            <th>Trades</th>
-                            <th>Win Rate</th>
-                            <th>P&L</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="sessions-tbody">
-                        <tr>
-                            <td colspan="9" class="loading">Loading sessions...</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <div class="card">
+            <div class="card-header">
+                <h2>📊 Trading Sessions History</h2>
             </div>
 
+            <table class="sessions-table">
+                <thead>
+                    <tr>
+                        <th>Session Name</th>
+                        <th>Date</th>
+                        <th>Duration</th>
+                        <th>Strategy</th>
+                        <th>Trades</th>
+                        <th>Win Rate</th>
+                        <th>P&L</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="sessions-tbody">
+                    <tr>
+                        <td colspan="9" class="loading">Loading sessions...</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+
+    </div>
     </div>
 
     <!-- Session Detail Modal -->

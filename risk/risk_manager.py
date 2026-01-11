@@ -190,9 +190,22 @@ class RiskManager:
             cursor.execute(query, values)
             db.conn.commit()
             
-            # Reload settings
-            self.settings = self.load_settings()
-
+            # Update local settings cache
+            for key, value in new_settings.items():
+                if key in self.settings:
+                    self.settings[key] = value
+            
+    def get_current_trade_size(self) -> float:
+        """Get position size based on current settings"""
+        balance = self.settings['account_balance']
+        risk_percent = self.settings['risk_per_trade_percent']
+        return round(balance * (risk_percent / 100), 2)
+    
+    def record_trade_result(self, result: str, profit: float):
+        """Update balance after trade result"""
+        new_balance = self.settings['account_balance'] + profit
+        self.update_settings({'account_balance': round(new_balance, 2)})
+        print(f"💰 Balance updated: ${self.settings['account_balance']:.2f} (Profit: {profit:+.2f})")
 
 # Global risk manager instance
 risk_manager = RiskManager()

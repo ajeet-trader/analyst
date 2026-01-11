@@ -32,6 +32,9 @@ from database.db_manager import db_manager
 # Sessions
 from sessions import session_manager
 
+# Asset Tracker
+from dashboard.asset_tracker import asset_tracker
+
 # App state
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SERVER['secret_key']
@@ -112,10 +115,22 @@ def help_page():
     return render_template('help.html')
 
 
+@app.route('/watchlist')
+def watchlist_page():
+    """Asset Watchlist page"""
+    return render_template('watchlist.html')
+
+
 @app.route('/sessions')
 def sessions_page():
     """Sessions history page"""
     return render_template('sessions.html')
+
+
+@app.route('/sessions/<int:session_id>')
+def session_detail_page(session_id):
+    """Session detail page"""
+    return render_template('session_detail.html')
 
 
 @app.route('/api/journal/recent')
@@ -218,9 +233,12 @@ def delete_signal_api(signal_id):
 
 @app.route('/api/sessions/active')
 def get_active_session():
-    """Get active session"""
+    """Get active session with explicit active flag"""
     session = session_manager.get_active_session()
-    return jsonify(session if session else {})
+    if session:
+        session['active'] = True
+        return jsonify(session)
+    return jsonify({'active': False})
 
 
 @app.route('/api/sessions/start', methods=['POST'])
@@ -276,7 +294,9 @@ def get_all_sessions():
 def get_session_details(session_id):
     """Get session details"""
     details = session_manager.get_session_details(session_id)
-    return jsonify(details if details else {})
+    if details:
+        return jsonify({'success': True, 'session': details})
+    return jsonify({'success': False, 'error': 'Session not found'}), 404
 
 
 @app.route('/api/status')
@@ -323,17 +343,129 @@ def get_history():
     })
 
 
+@app.route('/api/signals/<int:signal_id>/note', methods=['GET', 'POST', 'DELETE'])
+def manage_trade_note(signal_id):
+    """Get, save, or delete trade note"""
+    if request.method == 'GET':
+        note = db.get_trade_note(signal_id)
+        return jsonify({'success': True, 'note': note})
+    
+    elif request.method == 'POST':
+        data = request.json
+        note = data.get('note', '')
+        success = db.save_trade_note(signal_id, note)
+        
+        if success:
+            # Sync with journal metadata files
+            try:
+                # Get result to sync correctly
+                cursor = db.conn.cursor()
+                cursor.execute("SELECT result FROM signals WHERE id = ?", (signal_id,))
+                row = cursor.fetchone()
+                result = row['result'] if row else None
+                journal.update_result(signal_id, result, note)
+            except Exception as e:
+                print(f"Failed to sync note to journal: {e}")
+                
+        return jsonify({'success': success})
+    
+    elif request.method == 'DELETE':
+        success = db.delete_trade_note(signal_id)
+        if success:
+            try:
+                cursor = db.conn.cursor()
+                cursor.execute("SELECT result FROM signals WHERE id = ?", (signal_id,))
+                row = cursor.fetchone()
+                result = row['result'] if row else None
+                journal.update_result(signal_id, result, None)
+            except Exception as e:
+                print(f"Failed to sync note deletion to journal: {e}")
+        return jsonify({'success': success})
+
+
 @app.route('/api/signals/<int:signal_id>/result', methods=['POST'])
 def set_signal_result(signal_id):
-    """Update the result of a signal"""
+    """Set result for a specific signal (called by persistent WIN/LOSS buttons)"""
+    data = request.json
+    result = data.get('result')
+    user_note = data.get('user_note', data.get('note', ''))
+    return _process_signal_result(signal_id, result, user_note)
+
+
+@app.route('/api/signals/<int:signal_id>/modify_result', methods=['POST'])
+def modify_signal_result(signal_id):
+    """Manually override the result of an ARCHIVED signal"""
     data = request.json
     result = data.get('result')
     user_note = data.get('user_note', data.get('note', ''))
     
+    # Check if signal exists
+    cursor = db.conn.cursor()
+    cursor.execute("SELECT result, profit FROM signals WHERE id = ?", (signal_id,))
+    old_data = cursor.fetchone()
+    
+    if not old_data:
+        return jsonify({'success': False, 'error': 'Signal not found'}), 404
+        
+    old_result = old_data['result']
+    old_profit = old_data['profit'] or 0
+    
+    # If same result, just update note
+    if old_result == result:
+        db.update_signal_result(signal_id, result, user_note)
+        # Sync with journal
+        try:
+            journal.update_result(signal_id, result, user_note)
+        except: pass
+        return jsonify({'success': True, 'message': 'Note updated'})
+
+    # Reverse old result in risk manager/stats if necessary
+    risk_manager.record_trade_result('reversal', -old_profit)
+    
+    # Also update global stats (decrement old, increment new)
+    if old_result == 'win': state['stats']['wins'] -= 1
+    elif old_result == 'loss': state['stats']['losses'] -= 1
+    
+    res = _process_signal_result(signal_id, result, user_note)
+    
+    # Explicitly sync with journal metadata
+    try:
+        journal.update_result(signal_id, result, user_note)
+    except: pass
+    
+    return res
+
+
+def _process_signal_result(signal_id, result, user_note):
+    """Shared logic for processing results"""
     if result not in ['win', 'loss', 'draw']:
         return jsonify({'success': False, 'error': 'Invalid result'}), 400
-        
+    
+    # Get signal to calculate profit
+    signals = db.get_recent_signals(limit=1000)
+    signal = next((s for s in signals if s.get('id') == signal_id), None)
+    
+    if not signal:
+        return jsonify({'success': False, 'error': 'Signal not found'}), 404
+    
+    # Calculate profit
+    payout_percent = signal.get('payout_percent', 0)
+    investment = risk_manager.get_current_trade_size()
+    
+    if result == 'win':
+        profit = investment * (payout_percent / 100)
+    elif result == 'loss':
+        profit = -investment
+    else:  # draw
+        profit = 0
+    
+    # Update signal with result and profit
     success = db.update_signal_result(signal_id, result, user_note)
+    
+    # Update profit in database
+    cursor = db.conn.cursor()
+    cursor.execute("UPDATE signals SET profit = ? WHERE id = ?", (profit, signal_id))
+    db.conn.commit()
     
     if success:
         # Update journal
@@ -341,6 +473,13 @@ def set_signal_result(signal_id):
             journal.update_result(signal_id, result, user_note)
         except Exception as e:
             print(f"Journal update failed: {e}")
+        
+        # Update risk manager with profit
+        risk_manager.record_trade_result(result, profit)
+        
+        # Update asset tracker
+        asset_name = signal.get('asset', 'Unknown')
+        asset_tracker.update_after_result(asset_name, result, profit)
             
         # Update global state stats for broadcast
         if result == 'win':
@@ -356,20 +495,27 @@ def set_signal_result(signal_id):
         load_history()
         
         # Broadcast update
-        socketio.emit('state_update', state) # Send full state update to clear UI
+        socketio.emit('state_update', state)
         socketio.emit('stats_update', state['stats'])
         socketio.emit('history_update', {'history': state['signal_history']})
         
-        return jsonify({'success': True, 'stats': state['stats']})
+        return jsonify({
+            'success': True, 
+            'stats': state['stats'],
+            'signal_id': signal_id,
+            'profit': profit
+        })
     
-    return jsonify({'success': False, 'error': 'Signal not found'}), 404
+    return jsonify({'success': False, 'error': 'Unexpected error'}), 500
 
 
 @app.route('/api/signal/result', methods=['POST'])
 def record_result():
     """Legacy endpoint wrapper for the dashboard"""
     if state.get('current_signal_id'):
-        return set_signal_result(state['current_signal_id'])
+        data = request.json
+        result = data.get('result')
+        return _process_signal_result(state['current_signal_id'], result, None)
     return jsonify({'success': False, 'error': 'No active signal on dashboard'}), 400
 
 
@@ -415,6 +561,13 @@ def emit_signal(signal_data: dict, chart_paths: list = None):
     signal_id = db.save_signal(signal_data, chart_paths)
     state['current_signal_id'] = signal_id
     
+    asset_tracker.update_after_signal(
+        signal_data.get('asset', 'Unknown'),
+        signal_id,
+        signal_data.get('payout_percent', 0),
+        signal_data.get('confidence', 0)
+    )
+    
     # Start journal entry (archive charts)
     if chart_paths:
         journal.start_trade(signal_id, signal_data, chart_paths)
@@ -457,23 +610,7 @@ from journal.export_manager import export_manager
 journal_notes_db = JournalNotesDB()
 
 
-# Trade Notes Endpoints
-@app.route('/api/signals/<int:signal_id>/note', methods=['GET', 'POST', 'DELETE'])
-def manage_trade_note(signal_id):
-    """Get, save, or delete trade note"""
-    if request.method == 'GET':
-        note = db.get_trade_note(signal_id)
-        return jsonify({'success': True, 'note': note})
-    
-    elif request.method == 'POST':
-        data = request.json
-        note = data.get('note', '')
-        success = db.save_trade_note(signal_id, note)
-        return jsonify({'success': success})
-    
-    elif request.method == 'DELETE':
-        success = db.delete_trade_note(signal_id)
-        return jsonify({'success': success})
+# General Journal Notes Endpoints
 
 
 @app.route('/api/journal/templates/trade')
@@ -633,6 +770,64 @@ def export_trade_image(signal_id):
         )
     else:
         return jsonify({'success': False, 'error': 'Pillow not installed'}), 500
+
+
+# ===== Asset Watchlist APIs =====
+
+@app.route('/api/assets/list')
+def get_assets():
+    """Get all tracked assets with stats"""
+    try:
+        assets = asset_tracker.get_all_assets()
+        return jsonify({'success': True, 'assets': assets})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/assets/<asset_name>/stats')
+def get_asset_stats_api(asset_name):
+    """Get detailed stats for specific asset"""
+    try:
+        stats = asset_tracker.get_asset_stats(asset_name)
+        if stats:
+            return jsonify({'success': True, 'stats': stats})
+        return jsonify({'success': False, 'error': 'Asset not found'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/assets/suggest')
+def suggest_asset_api():
+    """Get AI suggestion for next asset to check"""
+    try:
+        suggestion = asset_tracker.suggest_next_asset()
+        if suggestion:
+            return jsonify({'success': True, 'suggestion': suggestion})
+        return jsonify({'success': True, 'suggestion': None, 'message': 'No assets tracked yet'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/assets/heatmap')
+def get_heatmap_api():
+    """Get performance heatmap data"""
+    try:
+        heatmap = asset_tracker.get_heatmap_data()
+        return jsonify({'success': True, 'heatmap': heatmap})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/assets/<path:asset_name>/details')
+def get_asset_details_api(asset_name):
+    """Get comprehensive details for an asset including trade history"""
+    try:
+        details = asset_tracker.get_asset_details(asset_name)
+        if details:
+            return jsonify({'success': True, 'details': details})
+        return jsonify({'success': False, 'error': 'Asset not found'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 def run_dashboard(host=None, port=None, open_browser=None):

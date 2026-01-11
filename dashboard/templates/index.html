@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Trading Analyst</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/session_warning.css') }}">
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 </head>
 
@@ -23,10 +24,15 @@
                 <a href="/" class="nav-link active">Dashboard</a>
                 <a href="/analytics" class="nav-link">Analytics</a>
                 <a href="/journal" class="nav-link">Journal</a>
+                <a href="/watchlist" class="nav-link">Watchlist</a>
                 <a href="/risk" class="nav-link">Risk</a>
                 <a href="/settings" class="nav-link">Settings</a>
                 <a href="/sessions" class="nav-link">Sessions</a>
                 <a href="/help" class="nav-link">Help</a>
+            </div>
+            <div class="status-bar">
+                <div class="status-dot" id="status-dot"></div>
+                <span id="status-text">Ready</span>
             </div>
         </header>
 
@@ -128,6 +134,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/journal_notes.css') }}">
     <script src="{{ url_for('static', filename='js/journal_notes.js') }}"></script>
     <script src="{{ url_for('static', filename='js/session_controls.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/session_check.js') }}"></script>
     <script src="{{ url_for('static', filename='js/persistent_signal.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>

@@ -141,6 +141,24 @@ class TradingAnalyst:
     
     def _on_complete(self):
         """Handle complete hotkey (c) - trigger analysis"""
+        # Check if there's an active session
+        try:
+            import requests
+            response = requests.get(f'http://127.0.0.1:{SERVER["port"]}/api/sessions/active', timeout=2)
+            if response.ok:
+                session_data = response.json()
+                if not session_data.get('active'):
+                    print("\n⚠️ No active session! Please start a session first.")
+                    print("   Go to Dashboard → Sessions → Start New Session")
+                    emit_error("No active session. Start a session first!")
+                    play_error_sound()
+                    return
+            else:
+                print("\n⚠️ Could not verify session status")
+        except Exception as e:
+            print(f"\n⚠️ Session check failed: {e}")
+            # Continue anyway if we can't reach the server
+        
         if self._analyzing:
             print("⚠️ Analysis already in progress...")
             return
@@ -183,6 +201,7 @@ class TradingAnalyst:
                     'confidence': signal.confidence,
                     'expiry': signal.expiry,
                     'entry_timing': signal.entry_timing,
+                    'payout_percent': signal.payout_percent,
                     'reasoning': signal.reasoning,
                     'patterns_detected': signal.patterns_detected,
                     'key_levels': signal.key_levels,

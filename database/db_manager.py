@@ -28,6 +28,7 @@ class DatabaseManager:
             # Delete all signals and sessions
             cursor.execute('DELETE FROM signals')
             cursor.execute('DELETE FROM trading_sessions')
+            cursor.execute('DELETE FROM asset_stats')
             
             # Reset user settings to defaults
             cursor.execute('UPDATE user_settings SET account_balance = 1000.0 WHERE id = 1')

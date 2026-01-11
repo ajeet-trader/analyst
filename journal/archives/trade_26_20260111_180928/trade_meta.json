@@ -1,0 +1,37 @@
+{
+  "signal_id": 26,
+  "timestamp": "2026-01-11T18:09:28.731792",
+  "direction": "PUT",
+  "asset": "AUD/CAD (OTC)",
+  "confidence": 80,
+  "expiry": "2m",
+  "entry_timing": "now",
+  "reasoning": "The charts show a clear bearish trend on both 1m and 2m timeframes. The recent candles have been predominantly red, indicating downward momentum. A shooting star or similar bearish pattern is visible, suggesting a potential continuation of the downtrend.",
+  "patterns_detected": [
+    "bearish_trend",
+    "shooting_star"
+  ],
+  "key_levels": [
+    "0.92280 support",
+    "0.92700 resistance"
+  ],
+  "provider": "groq",
+  "analysis_time_ms": 2345,
+  "charts": [
+    "J:\\New folder\\journal\\archives\\trade_26_20260111_180928\\chart_1.png",
+    "J:\\New folder\\journal\\archives\\trade_26_20260111_180928\\chart_2.png"
+  ],
+  "result": "win",
+  "user_note": "\u2705 What went well:\n- test\n\n\u26a0\ufe0f What could be improved:\n- output of ai\n\n\ud83e\udde0 My emotional state during this trade:\n- normal\n\n\ud83d\udcda Key takeaway:\n- test",
+  "post_analysis": {
+    "timestamp": "2026-01-11T21:30:14.106820",
+    "trade_outcome": "win",
+    "confidence_vs_result": {
+      "confidence": 80,
+      "result": "win",
+      "match": true
+    },
+    "suggestions": []
+  },
+  "completed_at": "2026-01-11T21:30:14.106416"
+}

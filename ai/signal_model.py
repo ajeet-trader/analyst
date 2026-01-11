@@ -16,6 +16,7 @@ class TradingSignal:
     expiry: str                 # "35s", "1m", "2m", "5m", etc.
     entry_timing: str           # "now", "candle_close", "wait_pullback"
     asset: str                  # "EUR/USD (OTC)", "CAD/CHF (OTC)", etc.
+    payout_percent: float = 0   # 0-100 percentage
     timeframes_analyzed: List[str] = field(default_factory=list)
     patterns_detected: List[str] = field(default_factory=list)
     reasoning: str = ""

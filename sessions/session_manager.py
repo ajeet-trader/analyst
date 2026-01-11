@@ -28,7 +28,7 @@ class SessionManager:
         return row['id'] if row else None
     
     def start_session(self, session_name: str, strategy_name: str, 
-                     risk_settings: dict) -> int:
+                     risk_settings: dict, session_mode: str = 'demo') -> int:
         """
         Start a new trading session
         
@@ -36,6 +36,7 @@ class SessionManager:
             session_name: User-defined session name
             strategy_name: Active strategy
             risk_settings: Current risk settings
+            session_mode: 'demo' or 'live'
         
         Returns:
             session_id
@@ -53,6 +54,9 @@ class SessionManager:
         except:
             strategy_snapshot = {}
         
+        # Get initial balance from risk settings
+        initial_balance = risk_settings.get('account_balance', 0.0)
+        
         cursor.execute("""
             INSERT INTO trading_sessions (
                 session_name,
@@ -60,14 +64,18 @@ class SessionManager:
                 status,
                 strategy_name,
                 strategy_snapshot,
-                risk_settings_snapshot
-            ) VALUES (?, ?, 'active', ?, ?, ?)
+                risk_settings_snapshot,
+                initial_balance,
+                session_mode
+            ) VALUES (?, ?, 'active', ?, ?, ?, ?, ?)
         """, (
             session_name,
             datetime.now().isoformat(),
             strategy_name,
             json.dumps(strategy_snapshot),
-            json.dumps(risk_settings)
+            json.dumps(risk_settings),
+            initial_balance,
+            session_mode
         ))
         
         db.conn.commit()
@@ -130,6 +138,7 @@ class SessionManager:
                     losses = ?,
                     skipped = ?,
                     total_pnl = ?,
+                    final_balance = ?,
                     notes = ?
                 WHERE id = ?
             """, (
@@ -139,6 +148,7 @@ class SessionManager:
                 stats['losses'],
                 stats['skipped'],
                 stats['total_pnl'],
+                stats['final_balance'],
                 notes,
                 session_id
             ))
@@ -210,13 +220,22 @@ class SessionManager:
         else:
             pnl = 0.0
         
+        # Get additional info from session row
+        cursor.execute("SELECT initial_balance, session_mode FROM trading_sessions WHERE id = ?", (session_id,))
+        session_row = cursor.fetchone()
+        initial_balance = session_row['initial_balance'] if session_row else 0.0
+        session_mode = session_row['session_mode'] if session_row else 'demo'
+
         return {
             'total_signals': total,
             'wins': wins,
             'losses': losses,
             'skipped': skipped,
             'win_rate': (wins / total * 100) if total > 0 else 0,
-            'total_pnl': round(pnl, 2)
+            'total_pnl': round(pnl, 2),
+            'initial_balance': initial_balance,
+            'final_balance': round(initial_balance + pnl, 2),
+            'session_mode': session_mode
         }
     
     def get_all_sessions(self, limit: int = 50) -> List[Dict]:
@@ -257,10 +276,44 @@ class SessionManager:
             ORDER BY timestamp DESC
         """, (session_id,))
         
-        session['signals'] = [dict(r) for r in cursor.fetchall()]
-        session['stats'] = self.get_session_stats(session_id)
+        signals = [dict(r) for r in cursor.fetchall()]
+        stats = self.get_session_stats(session_id)
         
-        return session
+        # Map field names to match frontend expectations
+        return {
+            'id': session['id'],
+            'name': session.get('session_name', f"Session {session['id']}"),
+            'status': session.get('status', 'active'),
+            'started_at': session.get('start_time'),
+            'ended_at': session.get('end_time'),
+            'duration': self._calculate_duration(session.get('start_time'), session.get('end_time')),
+            'strategy': session.get('strategy_name'),
+            'initial_balance': session.get('initial_balance', 0.0),
+            'final_balance': session.get('final_balance') if session.get('status') == 'completed' else stats['final_balance'],
+            'session_mode': session.get('session_mode', 'demo'),
+            'trades': signals,  # Frontend expects 'trades' not 'signals'
+            'stats': stats
+        }
+    
+    def _calculate_duration(self, start_time, end_time):
+        """Calculate session duration"""
+        if not start_time:
+            return "Unknown"
+        
+        try:
+            from datetime import datetime
+            start = datetime.fromisoformat(start_time.replace('Z', '+00:00'))
+            end = datetime.fromisoformat(end_time.replace('Z', '+00:00')) if end_time else datetime.now()
+            
+            duration = end - start
+            hours = int(duration.total_seconds() // 3600)
+            minutes = int((duration.total_seconds() % 3600) // 60)
+            
+            if hours > 0:
+                return f"{hours}h {minutes}m"
+            return f"{minutes}m"
+        except:
+            return "Ongoing"
 
 
 # Global session manager

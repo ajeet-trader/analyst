@@ -1,0 +1,37 @@
+{
+  "signal_id": 28,
+  "timestamp": "2026-01-11T21:44:19.475187",
+  "direction": "PUT",
+  "asset": "USD/ZAR (OTC)",
+  "confidence": 80,
+  "expiry": "2m",
+  "entry_timing": "now",
+  "reasoning": "Bearish trend on both 1m and 2m timeframes with bearish engulfing pattern and resistance at 14.83000",
+  "patterns_detected": [
+    "bearish_engulfing",
+    "resistance"
+  ],
+  "key_levels": [
+    "14.83000 resistance",
+    "14.82800 support"
+  ],
+  "provider": "groq",
+  "analysis_time_ms": 2455,
+  "charts": [
+    "J:\\New folder\\journal\\archives\\trade_28_20260111_214419\\chart_1.png",
+    "J:\\New folder\\journal\\archives\\trade_28_20260111_214419\\chart_2.png"
+  ],
+  "result": "win",
+  "user_note": "",
+  "post_analysis": {
+    "timestamp": "2026-01-11T21:57:51.861353",
+    "trade_outcome": "win",
+    "confidence_vs_result": {
+      "confidence": 80,
+      "result": "win",
+      "match": true
+    },
+    "suggestions": []
+  },
+  "completed_at": "2026-01-11T21:57:51.860000"
+}

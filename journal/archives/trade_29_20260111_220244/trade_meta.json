@@ -1,0 +1,37 @@
+{
+  "signal_id": 29,
+  "timestamp": "2026-01-11T22:02:44.046599",
+  "direction": "CALL",
+  "asset": "NZD/CAD",
+  "confidence": 80,
+  "expiry": "2m",
+  "entry_timing": "now",
+  "reasoning": "Bullish reversal pattern detected on 2m chart, aligning with support level.",
+  "patterns_detected": [
+    "bullish_engulfing",
+    "support_bounce"
+  ],
+  "key_levels": [
+    "0.7740 support",
+    "0.7800 resistance"
+  ],
+  "provider": "groq",
+  "analysis_time_ms": 5248,
+  "charts": [
+    "J:\\New folder\\journal\\archives\\trade_29_20260111_220244\\chart_1.png",
+    "J:\\New folder\\journal\\archives\\trade_29_20260111_220244\\chart_2.png"
+  ],
+  "result": "win",
+  "user_note": "",
+  "post_analysis": {
+    "timestamp": "2026-01-11T22:05:01.559218",
+    "trade_outcome": "win",
+    "confidence_vs_result": {
+      "confidence": 80,
+      "result": "win",
+      "match": true
+    },
+    "suggestions": []
+  },
+  "completed_at": "2026-01-11T22:05:01.557423"
+}

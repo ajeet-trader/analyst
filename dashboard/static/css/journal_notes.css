@@ -195,31 +195,7 @@
     line-height: 1.4;
 }
 
-/* Notification Animations */
-@keyframes slideInRight {
-    from {
-        transform: translateX(400px);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-@keyframes slideOutRight {
-    from {
-        transform: translateX(0);
-        opacity: 1;
-    }
-
-    to {
-        transform: translateX(400px);
-        opacity: 0;
-    }
-}
-
+/* Animations */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -239,5 +215,99 @@
     to {
         transform: translateY(0);
         opacity: 1;
+    }
+}
+
+/* Journal Grid Layout */
+.journal-grid {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr;
+    gap: 24px;
+    margin-top: 20px;
+    align-items: start;
+}
+
+/* Sidebar Notes List */
+.journal-notes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.note-item {
+    background: #151a35;
+    border: 1px solid #2d3a5f;
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.note-item:hover {
+    border-color: #3b82f6;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.1);
+}
+
+.note-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.note-mood {
+    font-size: 1.4rem;
+}
+
+.note-title {
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.note-content {
+    color: #9ca3b8;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    white-space: pre-wrap;
+}
+
+.note-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid #2d3a5f;
+}
+
+.note-date {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.tag-badge {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-left: 6px;
+}
+
+.empty-state {
+    text-align: center;
+    color: #4b5563;
+    padding: 40px 20px;
+    font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .journal-grid {
+        grid-template-columns: 1fr;
     }
 }

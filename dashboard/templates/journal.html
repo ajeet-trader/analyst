@@ -6,9 +6,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Journal - AI Trading Analyst</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/market_clock.css') }}">
 </head>
 
 <body>
+    <!-- Market Clock Widget -->
+    <div class="market-clock-widget">
+        <div class="clock-header">
+            <div id="ist-clock" class="ist-clock">Loading...</div>
+        </div>
+        <div class="session-list">
+            <div id="session-tokyo" class="session-item">
+                <span class="session-name">Tokyo</span>
+                <div class="session-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">CLOSED</span>
+                </div>
+            </div>
+            <div id="session-london" class="session-item">
+                <span class="session-name">London</span>
+                <div class="session-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">CLOSED</span>
+                </div>
+            </div>
+            <div id="session-new-york" class="session-item">
+                <span class="session-name">New York</span>
+                <div class="session-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">CLOSED</span>
+                </div>
+            </div>
+            <div id="session-sydney" class="session-item">
+                <span class="session-name">Sydney</span>
+                <div class="session-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">CLOSED</span>
+                </div>
+            </div>
+        </div>
+        <div id="market-peak" class="peak-indicator">
+            ⚡ NORMAL VOLATILITY
+        </div>
+    </div>
+
     <div class="dashboard">
 
         <!-- Header -->
@@ -33,14 +74,43 @@
         <div class="journal-grid">
             <!-- Left: Trade Journal (Main) -->
             <div class="card journal-main">
-                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                    <h2>📔 Trade Journal</h2>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn-secondary" onclick="showExportModal()"
-                            style="padding: 10px 20px; background: #151a35; color: #9ca3b8; border: 1px solid #2d3a5f; border-radius: 8px; cursor: pointer; font-weight: 600;">📤
-                            Export</button>
+                <div class="card-header" style="flex-direction: column; align-items: stretch; gap: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2>📔 Trade Journal</h2>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-secondary" onclick="showExportModal()"
+                                style="padding: 8px 16px; background: #151a35; color: #9ca3b8; border: 1px solid #2d3a5f; border-radius: 8px; cursor: pointer; font-weight: 600;">📤
+                                Export</button>
+                        </div>
+                    </div>
+
+                    <!-- Filters & Tabs -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                        <!-- Tabs -->
+                        <div class="journal-tabs" style="display: flex; gap: 5px;">
+                            <button class="tab-btn active" onclick="switchTab('all')">All Trades</button>
+                            <button class="tab-btn" onclick="switchTab('rejected')">Rejected Trades</button>
+                        </div>
+
+                        <!-- Filters -->
+                        <div style="display: flex; gap: 10px;">
+                            <select id="filter-mode" onchange="loadJournal()" class="filter-select">
+                                <option value="all">All Modes</option>
+                                <option value="demo">🔵 Demo</option>
+                                <option value="live">🟢 Live</option>
+                            </select>
+
+                            <select id="filter-market" onchange="loadJournal()" class="filter-select">
+                                <option value="all">All Markets</option>
+                                <option value="binary">📊 Binary</option>
+                                <option value="forex">💱 Forex</option>
+                                <option value="crypto">₿ Crypto</option>
+                                <option value="stock">📈 Stock</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
+
                 <div id="journal-list" class="journal-list">
                     <p class="empty-state">Loading journal entries...</p>
                 </div>
@@ -66,6 +136,7 @@
     <script src="{{ url_for('static', filename='js/journal_notes.js') }}"></script>
     <script src="{{ url_for('static', filename='js/journal.js') }}"></script>
     <script src="{{ url_for('static', filename='js/persistent_signal.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/market_clock.js') }}"></script>
 </body>
 
 </html>

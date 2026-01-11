@@ -15,7 +15,7 @@ from datetime import datetime
 from database import db
 
 # Dashboard config
-from dashboard.config import SERVER, DATA, FEATURES
+from dashboard.config_dashboard import SERVER, DATA, FEATURES
 
 # Journal
 from journal import journal
@@ -135,9 +135,28 @@ def session_detail_page(session_id):
 
 @app.route('/api/journal/recent')
 def get_recent_journal():
-    """Get recent journal entries"""
+    """Get recent journal entries with optional filtering"""
     limit = int(request.args.get('limit', 20))
-    trades = journal.get_recent_trades(limit)
+    mode = request.args.get('mode')
+    market = request.args.get('market')
+
+    trades = db.get_filtered_signals(limit=limit, mode=mode, market_type=market)
+
+    # Enrich with journal file data (optional, for post_analysis if available)
+    # We prioritize DB speed, but can fetch file details if needed by frontend
+    # The frontend mostly needs patterns, reasoning, etc. which are now in DB.
+
+    return jsonify(trades)
+
+
+@app.route('/api/signals/skipped')
+def get_skipped_signals():
+    """Get skipped signals with filtering"""
+    limit = int(request.args.get('limit', 50))
+    mode = request.args.get('mode')
+    market = request.args.get('market')
+
+    trades = db.get_filtered_signals(limit=limit, mode=mode, market_type=market, result='skip')
     return jsonify(trades)
 
 
@@ -246,6 +265,8 @@ def start_session():
     """Start new session"""
     data = request.json
     session_name = data.get('session_name', f"Session {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    mode = data.get('mode', 'demo')
+    market_type = data.get('market_type', 'binary')
     
     from strategies import strategy_engine
     from risk import risk_manager
@@ -253,7 +274,9 @@ def start_session():
     session_id = session_manager.start_session(
         session_name=session_name,
         strategy_name=strategy_engine.active_strategy,
-        risk_settings=risk_manager.settings
+        risk_settings=risk_manager.settings,
+        session_mode=mode,
+        market_type=market_type
     )
     
     return jsonify({'success': True, 'session_id': session_id})
@@ -854,7 +877,7 @@ def run_dashboard(host=None, port=None, open_browser=None):
     # Open browser
     if open_browser:
         url = f"http://{host}:{port}"
-        threading.Timer(1.5, lambda: webbrowser.open(url)).start()
+        # threading.Timer(1.5, lambda: webbrowser.open(url)).start()
         print(f"\n🌐 Dashboard running at: {url}")
         print("Press Ctrl+C in the console to quit\n")
     
@@ -862,4 +885,5 @@ def run_dashboard(host=None, port=None, open_browser=None):
 
 
 if __name__ == "__main__":
-    run_dashboard()
+    t = run_dashboard()
+    t.join()

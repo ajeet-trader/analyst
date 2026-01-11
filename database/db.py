@@ -15,7 +15,7 @@ from config import CACHE_DIR
 
 # Import dashboard config
 try:
-    from dashboard.config import DATABASE
+    from dashboard.config_dashboard import DATABASE
     DB_FILENAME = DATABASE['filename']
 except:
     DB_FILENAME = 'signals.db'
@@ -134,15 +134,12 @@ class Database:
         if 'profit' not in columns:
             cursor.execute("ALTER TABLE signals ADD COLUMN profit REAL DEFAULT 0")
         
-        # Add columns to asset_stats if missing
-        cursor.execute("PRAGMA table_info(asset_stats)")
-        asset_columns = [col[1] for col in cursor.fetchall()]
-        if 'confidence_history' not in asset_columns:
-            cursor.execute("ALTER TABLE asset_stats ADD COLUMN confidence_history TEXT")
-        
-        if 'session_performance' not in asset_columns:
-            cursor.execute("ALTER TABLE asset_stats ADD COLUMN session_performance TEXT")
-        
+        if 'mode' not in columns:
+            cursor.execute("ALTER TABLE signals ADD COLUMN mode TEXT")
+
+        if 'market_type' not in columns:
+            cursor.execute("ALTER TABLE signals ADD COLUMN market_type TEXT DEFAULT 'binary'")
+
         # Add new session enhancement columns if missing
         cursor.execute("PRAGMA table_info(trading_sessions)")
         session_columns = [col[1] for col in cursor.fetchall()]
@@ -150,6 +147,9 @@ class Database:
         if 'mode' not in session_columns:
             cursor.execute("ALTER TABLE trading_sessions ADD COLUMN mode TEXT DEFAULT 'demo'")
         
+        if 'market_type' not in session_columns:
+            cursor.execute("ALTER TABLE trading_sessions ADD COLUMN market_type TEXT DEFAULT 'binary'")
+
         if 'starting_balance' not in session_columns:
             cursor.execute("ALTER TABLE trading_sessions ADD COLUMN starting_balance REAL")
         
@@ -223,6 +223,15 @@ class Database:
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_asset_name ON asset_stats(asset_name)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_asset_updated ON asset_stats(updated_at DESC)")
         
+        # Add columns to asset_stats if missing (ensure table exists first)
+        cursor.execute("PRAGMA table_info(asset_stats)")
+        asset_columns = [col[1] for col in cursor.fetchall()]
+        if 'confidence_history' not in asset_columns:
+            cursor.execute("ALTER TABLE asset_stats ADD COLUMN confidence_history TEXT")
+
+        if 'session_performance' not in asset_columns:
+            cursor.execute("ALTER TABLE asset_stats ADD COLUMN session_performance TEXT")
+
         self.conn.commit()
     
     def save_signal(self, signal_data: dict, chart_paths: List[str] = None) -> int:
@@ -234,10 +243,16 @@ class Database:
         """
         # Get active session
         session_id = None
+        mode = 'demo'
+        market_type = 'binary'
+
         try:
             from sessions import session_manager
             active = session_manager.get_active_session()
-            session_id = active['id'] if active else None
+            if active:
+                session_id = active['id']
+                mode = active.get('mode', 'demo')
+                market_type = active.get('market_type', 'binary')
         except:
             pass
         
@@ -252,8 +267,9 @@ class Database:
             INSERT INTO signals (
                 direction, asset, confidence, expiry, entry_timing,
                 reasoning, patterns_detected, key_levels, trend_higher_tf,
-                trend_lower_tf, provider_used, analysis_time_ms, chart_paths, session_id, payout_percent, timestamp
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                trend_lower_tf, provider_used, analysis_time_ms, chart_paths,
+                session_id, payout_percent, timestamp, mode, market_type
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             signal_data['direction'],
             signal_data['asset'],
@@ -270,7 +286,9 @@ class Database:
             charts_json,
             session_id,
             signal_data.get('payout_percent', 0),
-            datetime.now().isoformat()
+            datetime.now().isoformat(),
+            mode,
+            market_type
         ))
         
         self.conn.commit()
@@ -299,6 +317,47 @@ class Database:
         rows = cursor.fetchall()
         return [dict(row) for row in rows]
     
+    def get_filtered_signals(self, limit: int = 20, mode: str = None,
+                           market_type: str = None, result: str = None) -> List[dict]:
+        """Get signals with filtering"""
+        cursor = self.conn.cursor()
+
+        query = "SELECT * FROM signals WHERE 1=1"
+        params = []
+
+        if mode and mode.lower() != 'all':
+            query += " AND mode = ?"
+            params.append(mode.lower())
+
+        if market_type and market_type.lower() != 'all':
+            query += " AND market_type = ?"
+            params.append(market_type.lower())
+
+        if result:
+            query += " AND result = ?"
+            params.append(result)
+
+        query += " ORDER BY timestamp DESC LIMIT ?"
+        params.append(limit)
+
+        cursor.execute(query, tuple(params))
+
+        rows = cursor.fetchall()
+
+        # Parse JSON fields
+        results = []
+        for row in rows:
+            data = dict(row)
+            try:
+                data['patterns_detected'] = json.loads(data['patterns_detected']) if data['patterns_detected'] else []
+                data['key_levels'] = json.loads(data['key_levels']) if data['key_levels'] else []
+                data['chart_paths'] = json.loads(data['chart_paths']) if data['chart_paths'] else []
+            except:
+                pass
+            results.append(data)
+
+        return results
+
     def get_stats(self) -> TradeStats:
         """Get aggregated statistics"""
         cursor = self.conn.cursor()

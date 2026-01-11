@@ -6,10 +6,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analytics - AI Trading Analyst</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/market_clock.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
+    <!-- Market Clock Widget -->
+    <div class="market-clock-widget">
+        <div class="clock-header">
+            <div id="ist-clock" class="ist-clock">Loading...</div>
+        </div>
+        <div class="session-list">
+            <div id="session-tokyo" class="session-item">
+                <span class="session-name">Tokyo</span>
+                <div class="session-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">CLOSED</span>
+                </div>
+            </div>
+            <div id="session-london" class="session-item">
+                <span class="session-name">London</span>
+                <div class="session-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">CLOSED</span>
+                </div>
+            </div>
+            <div id="session-new-york" class="session-item">
+                <span class="session-name">New York</span>
+                <div class="session-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">CLOSED</span>
+                </div>
+            </div>
+            <div id="session-sydney" class="session-item">
+                <span class="session-name">Sydney</span>
+                <div class="session-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">CLOSED</span>
+                </div>
+            </div>
+        </div>
+        <div id="market-peak" class="peak-indicator">
+            ⚡ NORMAL VOLATILITY
+        </div>
+    </div>
+
     <div class="dashboard">
 
         <!-- Header -->
@@ -81,6 +122,7 @@
     <script src="{{ url_for('static', filename='js/persistent_signal.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/journal_notes.css') }}">
     <script src="{{ url_for('static', filename='js/journal_notes.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/market_clock.js') }}"></script>
 </body>
 
 </html>

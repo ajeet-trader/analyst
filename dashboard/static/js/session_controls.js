@@ -72,46 +72,74 @@ function calculateDuration(startTime) {
 }
 
 function showStartSessionModal() {
-    // Check if strategy and risk are configured
+    // Check if strategy and risk are configured first
     fetch('/api/risk/settings')
         .then(res => res.json())
         .then(riskSettings => {
-            fetch('/api/strategy/active')
-                .then(res => res.json())
-                .then(strategyData => {
-                    const strategy = strategyData.active_strategy || 'Not set';
-                    const balance = riskSettings.account_balance || 0;
-                    const riskPercent = riskSettings.risk_per_trade_percent || 0;
+            const balance = riskSettings.account_balance || 0;
+            const riskPercent = riskSettings.risk_per_trade_percent || 0;
 
-                    // Only prompt if risk is truly not configured (balance is 0)
-                    if (balance === 0 || riskPercent === 0) {
-                        if (confirm('⚠️ Risk settings not configured!\n\nWould you like to set up your risk settings first?')) {
-                            window.location.href = '/risk';
-                            return;
-                        }
-                    }
+            if (balance === 0 || riskPercent === 0) {
+                if (confirm('⚠️ Risk settings not configured!\n\nWould you like to set up your risk settings first?')) {
+                    window.location.href = '/risk';
+                    return;
+                }
+            }
 
-                    const message = `Start new trading session?\n\nCurrent Settings:\n• Strategy: ${strategy}\n• Account Balance: $${balance}\n• Risk per Trade: ${riskSettings.risk_per_trade_percent}%\n\nThese settings will be locked for this session.\n\n`;
-
-                    const sessionName = prompt(message + 'Session Name:');
-                    if (sessionName && sessionName.trim()) {
-                        startSession(sessionName.trim());
-                    }
-                });
+            // Show modal
+            const modal = document.getElementById('start-session-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                // Reset fields
+                document.getElementById('modal-session-name').value = '';
+                document.querySelector('input[name="session-mode"][value="demo"]').checked = true;
+                document.getElementById('modal-market-type').value = 'binary';
+                updateModeStyle();
+            }
         });
 }
 
-async function startSession(sessionName) {
+function closeStartSessionModal() {
+    const modal = document.getElementById('start-session-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+function updateModeStyle() {
+    const isLive = document.querySelector('input[name="session-mode"][value="live"]').checked;
+    const warning = document.getElementById('live-warning');
+    if (warning) warning.style.display = isLive ? 'block' : 'none';
+}
+
+async function startNewSession() {
+    const nameInput = document.getElementById('modal-session-name');
+    const modeInput = document.querySelector('input[name="session-mode"]:checked');
+    const marketInput = document.getElementById('modal-market-type');
+
+    const sessionName = nameInput.value.trim() || `Session ${new Date().toLocaleString()}`;
+    const mode = modeInput.value;
+    const marketType = marketInput.value;
+
+    if (mode === 'live') {
+        if (!confirm('⚠️ CONFIRM LIVE TRADING\n\nYou are about to start a LIVE trading session.\nEnsure your broker is connected and you are ready to trade real funds.\n\nProceed?')) {
+            return;
+        }
+    }
+
     try {
         const res = await fetch('/api/sessions/start', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ session_name: sessionName })
+            body: JSON.stringify({
+                session_name: sessionName,
+                mode: mode,
+                market_type: marketType
+            })
         });
 
         const data = await res.json();
         if (data.success) {
-            alert(`✅ Session "${sessionName}" started!`);
+            closeStartSessionModal();
+            // alert(`✅ ${mode.toUpperCase()} Session Started!`);
             loadActiveSession();
         }
     } catch (err) {

@@ -9,7 +9,7 @@ from collections import defaultdict
 import json
 
 from database import db
-from dashboard.config import DATA
+from dashboard.config_dashboard import DATA
 
 analytics_bp = Blueprint('analytics', __name__)
 

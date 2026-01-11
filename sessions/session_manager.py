@@ -28,7 +28,8 @@ class SessionManager:
         return row['id'] if row else None
     
     def start_session(self, session_name: str, strategy_name: str, 
-                     risk_settings: dict, session_mode: str = 'demo') -> int:
+                     risk_settings: dict, session_mode: str = 'demo',
+                     market_type: str = 'binary') -> int:
         """
         Start a new trading session with mode and balance tracking
         
@@ -37,6 +38,7 @@ class SessionManager:
             strategy_name: Active strategy
             risk_settings: Current risk settings
             session_mode: 'demo' or 'live'
+            market_type: 'binary', 'forex', 'crypto', 'stock'
         
         Returns:
             session_id
@@ -60,8 +62,8 @@ class SessionManager:
         cursor.execute("""
             INSERT INTO trading_sessions (
                 session_name, start_time, status, strategy_name, 
-                strategy_snapshot, risk_settings_snapshot, mode, starting_balance, peak_balance
-            ) VALUES (?, ?, 'active', ?, ?, ?, ?, ?, ?)
+                strategy_snapshot, risk_settings_snapshot, mode, starting_balance, peak_balance, market_type
+            ) VALUES (?, ?, 'active', ?, ?, ?, ?, ?, ?, ?)
         """, (
             session_name,
             datetime.now().isoformat(),
@@ -70,7 +72,8 @@ class SessionManager:
             json.dumps(risk_settings),
             session_mode,
             starting_balance,
-            starting_balance  # Initial peak is starting balance
+            starting_balance,  # Initial peak is starting balance
+            market_type
         ))
         
         db.conn.commit()

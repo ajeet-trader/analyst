@@ -1,0 +1,161 @@
+/* Market Clock Widget */
+.market-clock-widget {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 220px;
+    background: rgba(26, 31, 58, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 20px;
+    z-index: 990; /* Below modals (9999) but above content */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    font-family: 'Segoe UI', sans-serif;
+    color: var(--text-primary);
+}
+
+.clock-header {
+    text-align: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+}
+
+.ist-clock {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent-blue);
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+}
+
+.session-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.session-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    padding: 4px 0;
+}
+
+.session-name {
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.session-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    min-width: 70px;
+    justify-content: center;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #666;
+}
+
+/* Status States */
+.session-item.status-open .session-status {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--accent-green);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.session-item.status-open .status-dot {
+    background: var(--accent-green);
+    box-shadow: 0 0 5px var(--accent-green);
+    animation: pulse-green 2s infinite;
+}
+
+.session-item.status-pre .session-status {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--accent-yellow);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.session-item.status-pre .status-dot {
+    background: var(--accent-yellow);
+    animation: pulse-yellow 2s infinite;
+}
+
+.session-item.status-closed .session-status {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--text-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.session-item.status-closed .status-dot {
+    background: var(--text-secondary);
+    opacity: 0.5;
+}
+
+/* Peak Indicator */
+.peak-indicator {
+    margin-top: 15px;
+    padding: 8px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    transition: all 0.3s;
+}
+
+.peak-indicator.active {
+    background: linear-gradient(45deg, rgba(239, 68, 68, 0.2), rgba(245, 158, 11, 0.2));
+    border: 1px solid rgba(245, 158, 11, 0.5);
+    color: #fff;
+    animation: glow-border 2s infinite alternate;
+}
+
+/* Animations */
+@keyframes pulse-green {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+@keyframes pulse-yellow {
+    0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+}
+
+@keyframes glow-border {
+    0% { box-shadow: 0 0 5px rgba(245, 158, 11, 0.2); }
+    100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.5); }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .market-clock-widget {
+        bottom: 10px;
+        right: 10px;
+        width: 180px;
+        padding: 15px;
+    }
+
+    .ist-clock {
+        font-size: 14px;
+    }
+
+    .session-item {
+        font-size: 11px;
+    }
+}

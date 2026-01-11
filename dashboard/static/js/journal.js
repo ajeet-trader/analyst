@@ -4,9 +4,41 @@ document.addEventListener('DOMContentLoaded', () => {
     loadGeneralNotes();
 });
 
+let currentTab = 'all';
+
+function switchTab(tab) {
+    currentTab = tab;
+
+    // Update UI
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.innerText.toLowerCase().includes(tab)) btn.classList.add('active');
+    });
+
+    // Hacky mapping since button text differs from 'rejected'
+    if (tab === 'all') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.querySelectorAll('.tab-btn')[1].classList.remove('active');
+    } else {
+        document.querySelectorAll('.tab-btn')[0].classList.remove('active');
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    }
+
+    loadJournal();
+}
+
 async function loadJournal() {
     try {
-        const res = await fetch('/api/journal/recent?limit=50');
+        const mode = document.getElementById('filter-mode').value;
+        const market = document.getElementById('filter-market').value;
+
+        let url = `/api/journal/recent?limit=50&mode=${mode}&market=${market}`;
+
+        if (currentTab === 'rejected') {
+            url = `/api/signals/skipped?limit=50&mode=${mode}&market=${market}`;
+        }
+
+        const res = await fetch(url);
         const trades = await res.json();
 
         displayJournal(trades);
@@ -80,6 +112,19 @@ function displayJournal(trades) {
 
         const suggestions = trade.post_analysis?.suggestions || [];
 
+        // Determine market icon
+        const marketIcons = { 'binary': '📊', 'forex': '💱', 'crypto': '₿', 'stock': '📈' };
+        const marketIcon = marketIcons[trade.market_type] || '📊';
+
+        // Determine mode badge
+        const isLive = trade.mode === 'live';
+        const modeBadge = isLive
+            ? `<span style="background: rgba(16, 185, 129, 0.2); color: #10b981; padding: 2px 8px; border-radius: 4px; font-size: 11px;">🟢 LIVE</span>`
+            : `<span style="background: rgba(59, 130, 246, 0.2); color: #3b82f6; padding: 2px 8px; border-radius: 4px; font-size: 11px;">🔵 DEMO</span>`;
+
+        // Signal ID might be id or signal_id depending on source
+        const signalId = trade.id || trade.signal_id;
+
         return `
             <div class="journal-entry ${resultClass}">
                 <div class="journal-header">
@@ -87,11 +132,13 @@ function displayJournal(trades) {
                         <span class="journal-result-icon">${resultIcon}</span>
                         <span class="journal-direction ${trade.direction.toLowerCase()}">${trade.direction}</span>
                         <span class="journal-asset">${trade.asset}</span>
+                        <span style="font-size: 14px; margin-left: 10px;" title="${trade.market_type}">${marketIcon}</span>
                     </div>
                     <div class="journal-meta">
+                        ${modeBadge}
                         <span class="journal-time">${timestamp}</span>
                         <span class="journal-confidence">${trade.confidence}%</span>
-                        <button class="btn-modify" onclick="modifyResult(${trade.signal_id})">✏️ Modify</button>
+                        <button class="btn-modify" onclick="modifyResult(${signalId})">✏️ Modify</button>
                     </div>
                 </div>
                 
@@ -99,8 +146,8 @@ function displayJournal(trades) {
                     <div class="journal-info">
                         <strong>Payout:</strong> <span style="color: var(--accent-blue)">${trade.payout_percent || 0}%</span> |
                         <strong>Expiry:</strong> ${trade.expiry} | 
-                        <strong>Timing:</strong> ${trade.entry_timing} |
-                        <strong>Provider:</strong> ${trade.provider}
+                        <strong>Timing:</strong> ${trade.entry_timing || 'N/A'} |
+                        <strong>Provider:</strong> ${trade.provider || 'N/A'}
                     </div>
                     
                     ${trade.patterns_detected && trade.patterns_detected.length > 0 ? `

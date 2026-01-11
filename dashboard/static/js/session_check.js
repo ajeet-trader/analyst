@@ -13,8 +13,12 @@ async function checkSessionStatus() {
         const banner = document.getElementById('session-warning-banner');
         const dashboard = document.querySelector('.dashboard');
 
+        const badge = document.getElementById('mode-badge');
+
         if (!data.active) {
             // No active session - show warning
+            if (badge) badge.style.display = 'none';
+
             if (!banner && dashboard) {
                 const newBanner = document.createElement('div');
                 newBanner.id = 'session-warning-banner';
@@ -42,6 +46,23 @@ async function checkSessionStatus() {
             // Active session exists - remove warning if present
             if (banner) {
                 banner.remove();
+            }
+
+            // Update mode badge
+            if (badge) {
+                badge.style.display = 'inline-block';
+                const mode = data.mode || 'demo';
+                if (mode === 'live') {
+                    badge.innerHTML = '🟢 LIVE MODE';
+                    badge.style.background = 'rgba(16, 185, 129, 0.2)';
+                    badge.style.color = '#10b981';
+                    badge.style.border = '1px solid #10b981';
+                } else {
+                    badge.innerHTML = '🔵 DEMO MODE';
+                    badge.style.background = 'rgba(59, 130, 246, 0.2)';
+                    badge.style.color = '#3b82f6';
+                    badge.style.border = '1px solid #3b82f6';
+                }
             }
         }
     } catch (err) {

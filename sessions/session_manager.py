@@ -30,7 +30,7 @@ class SessionManager:
     def start_session(self, session_name: str, strategy_name: str, 
                      risk_settings: dict, session_mode: str = 'demo') -> int:
         """
-        Start a new trading session
+        Start a new trading session with mode and balance tracking
         
         Args:
             session_name: User-defined session name
@@ -54,34 +54,29 @@ class SessionManager:
         except:
             strategy_snapshot = {}
         
-        # Get initial balance from risk settings
-        initial_balance = risk_settings.get('account_balance', 0.0)
+        # Get starting balance from risk settings
+        starting_balance = risk_settings.get('account_balance', 1000.0)
         
         cursor.execute("""
             INSERT INTO trading_sessions (
-                session_name,
-                start_time,
-                status,
-                strategy_name,
-                strategy_snapshot,
-                risk_settings_snapshot,
-                initial_balance,
-                session_mode
-            ) VALUES (?, ?, 'active', ?, ?, ?, ?, ?)
+                session_name, start_time, status, strategy_name, 
+                strategy_snapshot, risk_settings_snapshot, mode, starting_balance, peak_balance
+            ) VALUES (?, ?, 'active', ?, ?, ?, ?, ?, ?)
         """, (
             session_name,
             datetime.now().isoformat(),
             strategy_name,
             json.dumps(strategy_snapshot),
             json.dumps(risk_settings),
-            initial_balance,
-            session_mode
+            session_mode,
+            starting_balance,
+            starting_balance  # Initial peak is starting balance
         ))
         
         db.conn.commit()
         session_id = cursor.lastrowid
-        self.active_session_id = session_id
         
+        self.active_session_id = session_id
         return session_id
     
     def pause_session(self, session_id: int) -> bool:
@@ -122,44 +117,59 @@ class SessionManager:
         except:
             return False
     
-    def end_session(self, session_id: int, notes: str = None) -> bool:
+    def end_session(self, session_id: int, notes: str = '') -> bool:
         """End a session"""
         try:
-            # Update final stats
-            stats = self.get_session_stats(session_id)
-            
             cursor = db.conn.cursor()
+            
+            # Get session stats before ending
+            stats = self.get_session_stats(session_id)
+            starting_balance = stats.get('starting_balance', 0.0)
+            total_pnl = stats.get('total_pnl', 0.0)
+            ending_balance = starting_balance + total_pnl
+            
+            # Calculate balance change
+            balance_change = ending_balance - starting_balance
+            balance_change_percent = (balance_change / starting_balance * 100) if starting_balance > 0 else 0
+            
             cursor.execute("""
                 UPDATE trading_sessions 
                 SET status = 'completed',
                     end_time = ?,
+                    notes = ?,
                     total_signals = ?,
                     wins = ?,
                     losses = ?,
                     skipped = ?,
                     total_pnl = ?,
-                    final_balance = ?,
-                    notes = ?
+                    ending_balance = ?,
+                    balance_change = ?,
+                    balance_change_percent = ?
                 WHERE id = ?
             """, (
                 datetime.now().isoformat(),
-                stats['total_signals'],
-                stats['wins'],
-                stats['losses'],
-                stats['skipped'],
-                stats['total_pnl'],
-                stats['final_balance'],
                 notes,
+                stats.get('total_signals', 0),
+                stats.get('wins', 0),
+                stats.get('losses', 0),
+                stats.get('skipped', 0),
+                total_pnl,
+                ending_balance,
+                balance_change,
+                balance_change_percent,
                 session_id
             ))
+            
             db.conn.commit()
             
-            if session_id == self.active_session_id:
+            if self.active_session_id == session_id:
                 self.active_session_id = None
             
             return True
         except Exception as e:
             print(f"Error ending session: {e}")
+            import traceback
+            traceback.print_exc()
             return False
     
     def get_active_session(self) -> Optional[Dict]:
@@ -221,11 +231,11 @@ class SessionManager:
             pnl = 0.0
         
         # Get additional info from session row
-        cursor.execute("SELECT initial_balance, session_mode FROM trading_sessions WHERE id = ?", (session_id,))
+        cursor.execute("SELECT starting_balance, mode FROM trading_sessions WHERE id = ?", (session_id,))
         session_row = cursor.fetchone()
-        initial_balance = session_row['initial_balance'] if session_row else 0.0
-        session_mode = session_row['session_mode'] if session_row else 'demo'
-
+        starting_balance = session_row['starting_balance'] if session_row and session_row['starting_balance'] is not None else 0.0
+        mode = session_row['mode'] if session_row and session_row['mode'] is not None else 'demo'
+        
         return {
             'total_signals': total,
             'wins': wins,
@@ -233,9 +243,9 @@ class SessionManager:
             'skipped': skipped,
             'win_rate': (wins / total * 100) if total > 0 else 0,
             'total_pnl': round(pnl, 2),
-            'initial_balance': initial_balance,
-            'final_balance': round(initial_balance + pnl, 2),
-            'session_mode': session_mode
+            'starting_balance': starting_balance,
+            'final_balance': round(starting_balance + pnl, 2),
+            'mode': mode
         }
     
     def get_all_sessions(self, limit: int = 50) -> List[Dict]:

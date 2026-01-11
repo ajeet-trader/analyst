@@ -1,0 +1,39 @@
+{
+  "signal_id": 32,
+  "timestamp": "2026-01-11T22:45:26.905287",
+  "direction": "CALL",
+  "asset": "EUR/GBP (OTC)",
+  "confidence": 80,
+  "expiry": "2m",
+  "entry_timing": "now",
+  "reasoning": "The 1m and 2m timeframes show a clear bullish trend. The price has been consistently making higher highs and higher lows. The recent bounce from the support level around 0.87950 indicates a strong bullish momentum. The trend aligns across both timeframes, suggesting a high confidence in the upward movement continuing.",
+  "patterns_detected": [
+    "bullish_trend",
+    "support_bounce"
+  ],
+  "key_levels": [
+    "0.87950 support",
+    "0.88350 resistance"
+  ],
+  "provider": "groq",
+  "analysis_time_ms": 3004,
+  "charts": [
+    "J:\\New folder\\journal\\archives\\trade_32_20260111_224526\\chart_1.png",
+    "J:\\New folder\\journal\\archives\\trade_32_20260111_224526\\chart_2.png"
+  ],
+  "result": "loss",
+  "user_note": "",
+  "post_analysis": {
+    "timestamp": "2026-01-11T22:47:26.120441",
+    "trade_outcome": "loss",
+    "confidence_vs_result": {
+      "confidence": 80,
+      "result": "loss",
+      "match": false
+    },
+    "suggestions": [
+      "High confidence loss - review pattern recognition"
+    ]
+  },
+  "completed_at": "2026-01-11T22:47:26.119849"
+}

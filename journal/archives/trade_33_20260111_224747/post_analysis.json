@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-01-11T22:49:56.445809",
+  "trade_outcome": "loss",
+  "confidence_vs_result": {
+    "confidence": 80,
+    "result": "loss",
+    "match": false
+  },
+  "suggestions": [
+    "High confidence loss - review pattern recognition"
+  ]
+}

@@ -39,6 +39,9 @@ function createPersistentSignalPanel() {
                 <button onclick="recordPersistentResult('win')" class="btn-modern-win">
                     <span class="icon">✓</span> WIN
                 </button>
+                <button onclick="recordPersistentResult('skip')" class="btn-modern-skip">
+                    <span class="icon">⏭</span> SKIP
+                </button>
                 <button onclick="recordPersistentResult('loss')" class="btn-modern-loss">
                     <span class="icon">✗</span> LOSS
                 </button>

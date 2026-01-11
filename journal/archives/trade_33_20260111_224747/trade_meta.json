@@ -1,0 +1,37 @@
+{
+  "signal_id": 33,
+  "timestamp": "2026-01-11T22:47:47.036022",
+  "direction": "PUT",
+  "asset": "EUR/GBP",
+  "confidence": 80,
+  "expiry": "2m",
+  "entry_timing": "now",
+  "reasoning": "Bullish trend on both timeframes but recent shooting star at resistance level indicates potential reversal",
+  "patterns_detected": [
+    "shooting_star"
+  ],
+  "key_levels": [
+    "0.88300 resistance"
+  ],
+  "provider": "groq",
+  "analysis_time_ms": 2484,
+  "charts": [
+    "J:\\New folder\\journal\\archives\\trade_33_20260111_224747\\chart_1.png",
+    "J:\\New folder\\journal\\archives\\trade_33_20260111_224747\\chart_2.png"
+  ],
+  "result": "loss",
+  "user_note": "",
+  "post_analysis": {
+    "timestamp": "2026-01-11T22:49:56.445809",
+    "trade_outcome": "loss",
+    "confidence_vs_result": {
+      "confidence": 80,
+      "result": "loss",
+      "match": false
+    },
+    "suggestions": [
+      "High confidence loss - review pattern recognition"
+    ]
+  },
+  "completed_at": "2026-01-11T22:49:56.444306"
+}

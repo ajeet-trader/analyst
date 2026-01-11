@@ -1708,6 +1708,7 @@ select option:hover {
 }
 
 .btn-modern-win,
+.btn-modern-skip,
 .btn-modern-loss {
     padding: 12px 24px;
     border-radius: 12px;
@@ -1732,6 +1733,19 @@ select option:hover {
     color: white;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-modern-skip {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.btn-modern-skip:hover {
+    background: #f59e0b;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
 }
 
 .btn-modern-loss {
@@ -1776,6 +1790,7 @@ select option:hover {
     background: var(--accent-blue);
     color: white;
 }
+
 .signal-payout-badge {
     padding: 4px 10px;
     background: rgba(59, 130, 246, 0.15);

@@ -59,6 +59,13 @@ function renderSessionDetails(session) {
     // Calculate total P&L
     const totalPL = trades.reduce((sum, t) => sum + (t.profit || 0), 0);
 
+    // Get balance info from session stats
+    const stats = session.stats || {};
+    const startingBalance = stats.starting_balance || 0;
+    const endingBalance = stats.final_balance || (startingBalance + totalPL);
+    const balanceChange = endingBalance - startingBalance;
+    const balanceChangePercent = startingBalance > 0 ? (balanceChange / startingBalance * 100) : 0;
+
     // Update stats
     document.getElementById('total-trades').textContent = totalTrades;
     document.getElementById('wins').textContent = wins;
@@ -69,6 +76,14 @@ function renderSessionDetails(session) {
     const plElement = document.getElementById('total-pl');
     plElement.textContent = `${totalPL >= 0 ? '+' : ''}$${totalPL.toFixed(2)}`;
     plElement.className = `stat-value ${totalPL >= 0 ? 'stat-profit' : 'stat-loss'}`;
+
+    // Update balance stats
+    document.getElementById('starting-balance').textContent = `$${startingBalance.toFixed(2)}`;
+    document.getElementById('ending-balance').textContent = `$${endingBalance.toFixed(2)}`;
+
+    const balanceChangeElement = document.getElementById('balance-change');
+    balanceChangeElement.textContent = `${balanceChangePercent >= 0 ? '+' : ''}${balanceChangePercent.toFixed(1)}%`;
+    balanceChangeElement.className = `stat-value ${balanceChangePercent >= 0 ? 'stat-profit' : 'stat-loss'}`;
 
     // Render trades table
     renderTradesTable(trades);

@@ -1,0 +1,37 @@
+{
+  "signal_id": 31,
+  "timestamp": "2026-01-11T22:37:57.085581",
+  "direction": "CALL",
+  "asset": "EUR/GBP (OTC)",
+  "confidence": 80,
+  "expiry": "2m",
+  "entry_timing": "now",
+  "reasoning": "Bullish trend on both 1m and 2m timeframes with a recent bullish engulfing pattern and bounce off support level.",
+  "patterns_detected": [
+    "bullish_engulfing",
+    "support_bounce"
+  ],
+  "key_levels": [
+    "0.87953 support",
+    "0.88200 resistance"
+  ],
+  "provider": "groq",
+  "analysis_time_ms": 2925,
+  "charts": [
+    "J:\\New folder\\journal\\archives\\trade_31_20260111_223757\\chart_1.png",
+    "J:\\New folder\\journal\\archives\\trade_31_20260111_223757\\chart_2.png"
+  ],
+  "result": "win",
+  "user_note": "",
+  "post_analysis": {
+    "timestamp": "2026-01-11T22:40:41.879590",
+    "trade_outcome": "win",
+    "confidence_vs_result": {
+      "confidence": 80,
+      "result": "win",
+      "match": true
+    },
+    "suggestions": []
+  },
+  "completed_at": "2026-01-11T22:40:41.879117"
+}

@@ -143,6 +143,31 @@ class Database:
         if 'session_performance' not in asset_columns:
             cursor.execute("ALTER TABLE asset_stats ADD COLUMN session_performance TEXT")
         
+        # Add new session enhancement columns if missing
+        cursor.execute("PRAGMA table_info(trading_sessions)")
+        session_columns = [col[1] for col in cursor.fetchall()]
+        
+        if 'mode' not in session_columns:
+            cursor.execute("ALTER TABLE trading_sessions ADD COLUMN mode TEXT DEFAULT 'demo'")
+        
+        if 'starting_balance' not in session_columns:
+            cursor.execute("ALTER TABLE trading_sessions ADD COLUMN starting_balance REAL")
+        
+        if 'ending_balance' not in session_columns:
+            cursor.execute("ALTER TABLE trading_sessions ADD COLUMN ending_balance REAL")
+        
+        if 'balance_change' not in session_columns:
+            cursor.execute("ALTER TABLE trading_sessions ADD COLUMN balance_change REAL")
+        
+        if 'balance_change_percent' not in session_columns:
+            cursor.execute("ALTER TABLE trading_sessions ADD COLUMN balance_change_percent REAL")
+        
+        if 'max_drawdown' not in session_columns:
+            cursor.execute("ALTER TABLE trading_sessions ADD COLUMN max_drawdown REAL")
+        
+        if 'peak_balance' not in session_columns:
+            cursor.execute("ALTER TABLE trading_sessions ADD COLUMN peak_balance REAL")
+        
         # Journal notes table (general journal entries)
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS journal_notes (

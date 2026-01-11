@@ -285,9 +285,15 @@ def end_session(session_id):
 @app.route('/api/sessions/all')
 def get_all_sessions():
     """Get all sessions"""
-    limit = int(request.args.get('limit', 50))
-    sessions = session_manager.get_all_sessions(limit)
-    return jsonify(sessions)
+    try:
+        limit = int(request.args.get('limit', 50))
+        sessions = session_manager.get_all_sessions(limit)
+        return jsonify(sessions)
+    except Exception as e:
+        print(f"Error loading sessions: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
 
 
 @app.route('/api/sessions/<int:session_id>/details')
@@ -438,7 +444,7 @@ def modify_signal_result(signal_id):
 
 def _process_signal_result(signal_id, result, user_note):
     """Shared logic for processing results"""
-    if result not in ['win', 'loss', 'draw']:
+    if result not in ['win', 'loss', 'draw', 'skip']:
         return jsonify({'success': False, 'error': 'Invalid result'}), 400
     
     # Get signal to calculate profit
@@ -456,7 +462,7 @@ def _process_signal_result(signal_id, result, user_note):
         profit = investment * (payout_percent / 100)
     elif result == 'loss':
         profit = -investment
-    else:  # draw
+    else:  # draw or skip
         profit = 0
     
     # Update signal with result and profit
@@ -474,8 +480,9 @@ def _process_signal_result(signal_id, result, user_note):
         except Exception as e:
             print(f"Journal update failed: {e}")
         
-        # Update risk manager with profit
-        risk_manager.record_trade_result(result, profit)
+        # Update risk manager with profit (skip doesn't affect balance)
+        if result != 'skip':
+            risk_manager.record_trade_result(result, profit)
         
         # Update asset tracker
         asset_name = signal.get('asset', 'Unknown')
@@ -486,6 +493,7 @@ def _process_signal_result(signal_id, result, user_note):
             state['stats']['wins'] += 1
         elif result == 'loss':
             state['stats']['losses'] += 1
+        # Note: skip doesn't increment wins or losses
         
         if state.get('current_signal_id') == signal_id:
             state['current_signal'] = None

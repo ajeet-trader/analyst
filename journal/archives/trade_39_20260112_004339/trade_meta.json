@@ -1,0 +1,39 @@
+{
+  "signal_id": 39,
+  "timestamp": "2026-01-12T00:43:39.058747",
+  "direction": "CALL",
+  "asset": "GBP/JPY",
+  "confidence": 80,
+  "expiry": "5m",
+  "entry_timing": "now",
+  "reasoning": "Bullish trend on higher timeframes, recent support bounce on lower timeframes indicating potential for upward movement.",
+  "patterns_detected": [
+    "bullish_engulfing",
+    "support_bounce"
+  ],
+  "key_levels": [
+    "212.400 support",
+    "212.700 resistance"
+  ],
+  "provider": "groq",
+  "analysis_time_ms": 5298,
+  "charts": [
+    "J:\\New folder\\journal\\archives\\trade_39_20260112_004339\\chart_1.png",
+    "J:\\New folder\\journal\\archives\\trade_39_20260112_004339\\chart_2.png",
+    "J:\\New folder\\journal\\archives\\trade_39_20260112_004339\\chart_3.png",
+    "J:\\New folder\\journal\\archives\\trade_39_20260112_004339\\chart_4.png"
+  ],
+  "result": "win",
+  "user_note": "",
+  "post_analysis": {
+    "timestamp": "2026-01-12T00:45:12.293985",
+    "trade_outcome": "win",
+    "confidence_vs_result": {
+      "confidence": 80,
+      "result": "win",
+      "match": true
+    },
+    "suggestions": []
+  },
+  "completed_at": "2026-01-12T00:45:12.254574"
+}

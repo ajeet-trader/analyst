@@ -48,21 +48,17 @@ async function checkSessionStatus() {
                 banner.remove();
             }
 
+            const statusText = document.getElementById('status-text');
+            const statusBar = document.querySelector('.status-bar');
+            if (statusText) statusText.innerText = 'Active Session';
+            if (statusBar) statusBar.classList.add('active');
+
             // Update mode badge
             if (badge) {
                 badge.style.display = 'inline-block';
                 const mode = data.mode || 'demo';
-                if (mode === 'live') {
-                    badge.innerHTML = '🟢 LIVE MODE';
-                    badge.style.background = 'rgba(16, 185, 129, 0.2)';
-                    badge.style.color = '#10b981';
-                    badge.style.border = '1px solid #10b981';
-                } else {
-                    badge.innerHTML = '🔵 DEMO MODE';
-                    badge.style.background = 'rgba(59, 130, 246, 0.2)';
-                    badge.style.color = '#3b82f6';
-                    badge.style.border = '1px solid #3b82f6';
-                }
+                badge.innerHTML = (mode === 'live' ? '⚡ ' : '🔹 ') + mode.toUpperCase() + ' MODE';
+                badge.className = 'mode-badge ' + mode.toLowerCase();
             }
         }
     } catch (err) {

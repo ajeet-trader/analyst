@@ -1,0 +1,38 @@
+{
+  "signal_id": 36,
+  "timestamp": "2026-01-12T00:29:46.818888",
+  "direction": "CALL",
+  "asset": "GBP/JPY",
+  "confidence": 80,
+  "expiry": "5m",
+  "entry_timing": "now",
+  "reasoning": "The 5m timeframe shows a strong bullish trend with recent support bounce at 212.400. The 1m and 2m timeframes confirm the bullish momentum. Conservative strategy suggests avoiding short expiries, hence 5m expiry.",
+  "patterns_detected": [
+    "bullish_momentum",
+    "support_bounce"
+  ],
+  "key_levels": [
+    "212.400 support",
+    "212.700 resistance"
+  ],
+  "provider": "groq",
+  "analysis_time_ms": 3067,
+  "charts": [
+    "J:\\New folder\\journal\\archives\\trade_36_20260112_002946\\chart_1.png",
+    "J:\\New folder\\journal\\archives\\trade_36_20260112_002946\\chart_2.png",
+    "J:\\New folder\\journal\\archives\\trade_36_20260112_002946\\chart_3.png"
+  ],
+  "result": "skip",
+  "user_note": "",
+  "post_analysis": {
+    "timestamp": "2026-01-12T00:29:59.081475",
+    "trade_outcome": "skip",
+    "confidence_vs_result": {
+      "confidence": 80,
+      "result": "skip",
+      "match": false
+    },
+    "suggestions": []
+  },
+  "completed_at": "2026-01-12T00:29:59.078986"
+}

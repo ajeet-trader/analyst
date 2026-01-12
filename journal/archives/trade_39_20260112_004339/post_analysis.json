@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-01-12T00:45:12.293985",
+  "trade_outcome": "win",
+  "confidence_vs_result": {
+    "confidence": 80,
+    "result": "win",
+    "match": true
+  },
+  "suggestions": []
+}

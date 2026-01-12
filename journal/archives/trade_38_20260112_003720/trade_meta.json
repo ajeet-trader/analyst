@@ -1,0 +1,37 @@
+{
+  "signal_id": 38,
+  "timestamp": "2026-01-12T00:37:20.228434",
+  "direction": "PUT",
+  "asset": "GBP/JPY",
+  "confidence": 80,
+  "expiry": "2m",
+  "entry_timing": "now",
+  "reasoning": "Bearish reversal pattern detected on 1m and 2m timeframes with bearish momentum.",
+  "patterns_detected": [
+    "shooting_star",
+    "bearish_momentum"
+  ],
+  "key_levels": [
+    "212.500 resistance",
+    "212.200 support"
+  ],
+  "provider": "groq",
+  "analysis_time_ms": 2220,
+  "charts": [
+    "J:\\New folder\\journal\\archives\\trade_38_20260112_003720\\chart_1.png",
+    "J:\\New folder\\journal\\archives\\trade_38_20260112_003720\\chart_2.png"
+  ],
+  "result": "win",
+  "user_note": "",
+  "post_analysis": {
+    "timestamp": "2026-01-12T00:41:15.388110",
+    "trade_outcome": "win",
+    "confidence_vs_result": {
+      "confidence": 80,
+      "result": "win",
+      "match": true
+    },
+    "suggestions": []
+  },
+  "completed_at": "2026-01-12T00:41:15.363542"
+}

@@ -1,0 +1,40 @@
+{
+  "signal_id": 40,
+  "timestamp": "2026-01-12T00:50:43.028006",
+  "direction": "PUT",
+  "asset": "USD/BRL (OTC)",
+  "confidence": 80,
+  "expiry": "5m",
+  "entry_timing": "now",
+  "reasoning": "Bearish trend on all timeframes with recent support bounce on 1m and 2m charts, suggesting potential for short-term downside movement.",
+  "patterns_detected": [
+    "bearish_trend",
+    "support_bounce"
+  ],
+  "key_levels": [
+    "0.19381 support",
+    "0.19500 resistance"
+  ],
+  "provider": "groq",
+  "analysis_time_ms": 3549,
+  "charts": [
+    "J:\\New folder\\journal\\archives\\trade_40_20260112_005043\\chart_1.png",
+    "J:\\New folder\\journal\\archives\\trade_40_20260112_005043\\chart_2.png",
+    "J:\\New folder\\journal\\archives\\trade_40_20260112_005043\\chart_3.png"
+  ],
+  "result": "loss",
+  "user_note": "",
+  "post_analysis": {
+    "timestamp": "2026-01-12T01:05:41.046215",
+    "trade_outcome": "loss",
+    "confidence_vs_result": {
+      "confidence": 80,
+      "result": "loss",
+      "match": false
+    },
+    "suggestions": [
+      "High confidence loss - review pattern recognition"
+    ]
+  },
+  "completed_at": "2026-01-12T01:05:41.038869"
+}

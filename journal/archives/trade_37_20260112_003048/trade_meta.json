@@ -1,0 +1,38 @@
+{
+  "signal_id": 37,
+  "timestamp": "2026-01-12T00:30:48.703863",
+  "direction": "CALL",
+  "asset": "GBP/JPY",
+  "confidence": 80,
+  "expiry": "5m",
+  "entry_timing": "now",
+  "reasoning": "The GBP/JPY pair shows a strong bullish trend across multiple timeframes (1m, 2m, 5m). The 5m chart indicates a recent bounce off support around 211.883, suggesting a continuation of the upward movement. The higher timeframes confirm the bullish trend, and the current price action indicates a potential for further gains.",
+  "patterns_detected": [
+    "bullish_momentum",
+    "support_bounce"
+  ],
+  "key_levels": [
+    "212.100 support",
+    "212.500 resistance"
+  ],
+  "provider": "groq",
+  "analysis_time_ms": 2323,
+  "charts": [
+    "J:\\New folder\\journal\\archives\\trade_37_20260112_003048\\chart_1.png",
+    "J:\\New folder\\journal\\archives\\trade_37_20260112_003048\\chart_2.png",
+    "J:\\New folder\\journal\\archives\\trade_37_20260112_003048\\chart_3.png"
+  ],
+  "result": "win",
+  "user_note": "",
+  "post_analysis": {
+    "timestamp": "2026-01-12T00:35:29.432000",
+    "trade_outcome": "win",
+    "confidence_vs_result": {
+      "confidence": 80,
+      "result": "win",
+      "match": true
+    },
+    "suggestions": []
+  },
+  "completed_at": "2026-01-12T00:35:29.425930"
+}
